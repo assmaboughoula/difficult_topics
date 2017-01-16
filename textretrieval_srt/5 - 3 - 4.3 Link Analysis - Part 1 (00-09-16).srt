@@ -1,0 +1,603 @@
+1
+00:00:00,025 --> 00:00:07,462
+[SOUND].
+
+2
+00:00:07,462 --> 00:00:11,020
+This lecture is about link analysis for
+web search.
+
+3
+00:00:13,090 --> 00:00:18,120
+In this lecture we're going to talk
+about web search, and particularly
+
+4
+00:00:18,120 --> 00:00:23,420
+focusing on how to do link analysis and
+use the results to improve search.
+
+5
+00:00:25,660 --> 00:00:31,230
+The main topic of this lecture is to look
+at the ranking algorithms for web search.
+
+6
+00:00:32,420 --> 00:00:35,650
+In the previous lecture,
+we talked about how to create index.
+
+7
+00:00:35,650 --> 00:00:40,550
+Now that we have got index,
+we want to see how we can improve
+
+8
+00:00:40,550 --> 00:00:45,100
+ranking of pages on the web.
+
+9
+00:00:45,100 --> 00:00:48,380
+Standard IR models can
+also be applied here,
+
+10
+00:00:48,380 --> 00:00:53,640
+in fact they are important building
+blocks for supporting web search,
+
+11
+00:00:53,640 --> 00:00:58,550
+but they aren't sufficient,
+mainly for the following reasons.
+
+12
+00:00:58,550 --> 00:01:02,540
+First, on the web we tend to have
+very different information needs.
+
+13
+00:01:02,540 --> 00:01:07,240
+For example, people might search for
+a web page or entry page, and
+
+14
+00:01:07,240 --> 00:01:11,230
+this is different from
+the traditional library search
+
+15
+00:01:11,230 --> 00:01:15,840
+where people are primarily interested
+in collecting literature information.
+
+16
+00:01:15,840 --> 00:01:19,342
+So these kind of queries are often
+called navigational queries,
+
+17
+00:01:19,342 --> 00:01:23,250
+the purpose is to navigate into
+a particular targeted page.
+
+18
+00:01:23,250 --> 00:01:28,230
+So for such queries, we might
+benefit from using link information.
+
+19
+00:01:28,230 --> 00:01:31,370
+Secondly, documents have
+additional information.
+
+20
+00:01:31,370 --> 00:01:34,320
+And on the web, web pages are web format.
+
+21
+00:01:34,320 --> 00:01:37,100
+There are a lot of other groups,
+
+22
+00:01:37,100 --> 00:01:40,536
+such as the layout, the title,
+or link information again.
+
+23
+00:01:40,536 --> 00:01:45,030
+So this has provided an opportunity to
+
+24
+00:01:45,030 --> 00:01:49,800
+use extra context information of
+the document to improve scoring.
+
+25
+00:01:49,800 --> 00:01:52,240
+And finally,
+information quality varies a lot.
+
+26
+00:01:52,240 --> 00:01:58,410
+So that means we have to consider many
+factors to improve the ranking algorithm.
+
+27
+00:01:58,410 --> 00:02:03,570
+This would give us a more robust way to
+rank the pages making it the harder for
+
+28
+00:02:03,570 --> 00:02:09,350
+any spammer to just manipulate the one
+signal to improve the ranking of a page.
+
+29
+00:02:10,500 --> 00:02:14,200
+So as a result people have made
+a number of major extensions
+
+30
+00:02:14,200 --> 00:02:15,502
+to the ranking algorithms.
+
+31
+00:02:15,502 --> 00:02:20,380
+One line is to exploit links to
+
+32
+00:02:20,380 --> 00:02:24,790
+improve scoring and
+that's the main topic of this lecture.
+
+33
+00:02:26,370 --> 00:02:30,730
+People have also proposed
+algorithms to exploit large scale
+
+34
+00:02:30,730 --> 00:02:34,440
+implicit feedback information
+in the form of clickthroughs.
+
+35
+00:02:34,440 --> 00:02:37,850
+That's of course in the category
+of feedback techniques, and
+
+36
+00:02:37,850 --> 00:02:40,730
+machinery is often used there.
+
+37
+00:02:40,730 --> 00:02:45,406
+In general, in web search the ranking
+algorithms are based on machinery
+
+38
+00:02:45,406 --> 00:02:49,640
+algorithms to combine
+all kinds of features.
+
+39
+00:02:49,640 --> 00:02:54,270
+And many of them are based on the standard
+original models such as BM25 that
+
+40
+00:02:54,270 --> 00:02:57,152
+we talked about, or
+
+41
+00:02:57,152 --> 00:03:02,845
+queried iCode to score
+different parts of documents or
+
+42
+00:03:02,845 --> 00:03:07,380
+to, provide additional features
+based on content matching.
+
+43
+00:03:07,380 --> 00:03:11,250
+But link information
+is also very useful so
+
+44
+00:03:11,250 --> 00:03:17,660
+they provide additional scoring signals.
+
+45
+00:03:17,660 --> 00:03:21,080
+So let's look at links in
+more detail on the web.
+
+46
+00:03:21,080 --> 00:03:26,440
+So this is a snapshot of some
+part of the web, let's say.
+
+47
+00:03:26,440 --> 00:03:30,790
+So we can see there are many links
+that link different pages together.
+
+48
+00:03:30,790 --> 00:03:35,320
+And in this case you can also look at the,
+the center here.
+
+49
+00:03:35,320 --> 00:03:39,050
+There is a description of a link
+that's pointing to the document on
+
+50
+00:03:39,050 --> 00:03:40,400
+the right side.
+
+51
+00:03:40,400 --> 00:03:42,850
+Now this description text
+is called anchor text.
+
+52
+00:03:44,330 --> 00:03:48,900
+If you think about this text,
+it's actually quite useful
+
+53
+00:03:48,900 --> 00:03:53,855
+because it provides some extra description
+of that page being pointed to.
+
+54
+00:03:53,855 --> 00:03:59,695
+So, for example, if someone wants
+to bookmark Amazon.com front page,
+
+55
+00:03:59,695 --> 00:04:04,545
+the person might say,
+the big online bookstore, and
+
+56
+00:04:04,545 --> 00:04:07,705
+then with a link to Amazon, right?
+
+57
+00:04:07,705 --> 00:04:11,885
+So the description here is actually very
+similar to what the user would type in
+
+58
+00:04:11,885 --> 00:04:15,190
+in the query box when they are looking for
+such a page.
+
+59
+00:04:15,190 --> 00:04:19,950
+That's why it's very useful for,
+for, ranking pages.
+
+60
+00:04:19,950 --> 00:04:25,866
+Suppose someone types in a query
+like online bookstore or
+
+61
+00:04:25,866 --> 00:04:28,730
+big online bookstore, right.
+
+62
+00:04:28,730 --> 00:04:35,960
+The query would match this
+anchor text in the page here.
+
+63
+00:04:35,960 --> 00:04:39,650
+And then this actually
+provides evidence for
+
+64
+00:04:39,650 --> 00:04:45,650
+matching the page that's been pointed to,
+that is the Amazon entry page.
+
+65
+00:04:45,650 --> 00:04:50,120
+So if you match the anchor text
+that describes the link to a page,
+
+66
+00:04:50,120 --> 00:04:54,290
+actually that provides good evidence for
+
+67
+00:04:54,290 --> 00:04:58,080
+the relevance of the page
+being pointing to.
+
+68
+00:04:58,080 --> 00:04:59,600
+So anchor text is very useful.
+
+69
+00:05:00,620 --> 00:05:04,140
+If you look at the bottom part of this
+picture, you can also see there are some
+
+70
+00:05:04,140 --> 00:05:08,380
+patterns of links, and these links might
+indicate the utility of a document.
+
+71
+00:05:08,380 --> 00:05:09,220
+So for example,
+
+72
+00:05:09,220 --> 00:05:14,280
+on the right side you can see this
+page has received many in, in links.
+
+73
+00:05:14,280 --> 00:05:16,530
+That means many other pages
+are pointing to this page.
+
+74
+00:05:16,530 --> 00:05:20,270
+And this shows that this
+page is quite useful.
+
+75
+00:05:21,370 --> 00:05:25,920
+On the left side you can see, this is
+a page that points to many other pages.
+
+76
+00:05:25,920 --> 00:05:29,050
+So, this is a theater page
+that would allow you to
+
+77
+00:05:29,050 --> 00:05:31,260
+actually see a lot of other pages.
+
+78
+00:05:32,670 --> 00:05:38,260
+So we can call the first case authority
+page and the second case a hub page.
+
+79
+00:05:38,260 --> 00:05:41,240
+This means the link information
+can help in two ways.
+
+80
+00:05:41,240 --> 00:05:44,050
+One is to provide extra text for matching.
+
+81
+00:05:44,050 --> 00:05:49,050
+The other is to provide some
+additional scores for the web
+
+82
+00:05:49,050 --> 00:05:54,090
+pages to characterize how likely a page is
+a hub, how likely a page is a authority.
+
+83
+00:05:55,820 --> 00:06:02,610
+So people then, of course, propose ideas
+to leverage this, this link information.
+
+84
+00:06:02,610 --> 00:06:04,290
+Google's PageRank,
+
+85
+00:06:04,290 --> 00:06:09,200
+which was a main technique that they
+used in early days, is a good example.
+
+86
+00:06:09,200 --> 00:06:14,170
+And that, that is the algorithm
+to capture page popularity,
+
+87
+00:06:14,170 --> 00:06:17,070
+basically to score authority.
+
+88
+00:06:17,070 --> 00:06:21,680
+So the intuitions here are, links are just
+like citations in the literature.
+
+89
+00:06:21,680 --> 00:06:24,010
+Think about one page
+pointing to another page.
+
+90
+00:06:24,010 --> 00:06:27,440
+This is very similar to one
+paper citing another paper.
+
+91
+00:06:27,440 --> 00:06:30,360
+So, of course,
+then if a page is cited often,
+
+92
+00:06:30,360 --> 00:06:35,110
+then we can assume this page to
+be more useful in general, right?
+
+93
+00:06:35,110 --> 00:06:36,570
+So that's a very good intuition.
+
+94
+00:06:38,060 --> 00:06:42,110
+Now, page rank is essentially
+to take advantage of this
+
+95
+00:06:42,110 --> 00:06:46,650
+intuition to implement the,
+with the principle approach.
+
+96
+00:06:46,650 --> 00:06:51,980
+Intuitively it's essentially doing
+citation counting or in link counting.
+
+97
+00:06:51,980 --> 00:06:56,390
+It just improves this simple idea in,
+in two ways.
+
+98
+00:06:56,390 --> 00:06:59,420
+One is would consider indirect citations.
+
+99
+00:06:59,420 --> 00:07:03,960
+So that means you don't just look
+at the how many in links you have,
+
+100
+00:07:03,960 --> 00:07:08,550
+you also look at the what are those
+pages that are pointing to you.
+
+101
+00:07:08,550 --> 00:07:13,530
+If those pages, themselves, have a lot
+of in links, well that means a lot.
+
+102
+00:07:13,530 --> 00:07:15,450
+In some sense you will get
+some credit from that.
+
+103
+00:07:16,690 --> 00:07:20,920
+But if those pages that are pointing
+to you are not are being pointed to
+
+104
+00:07:20,920 --> 00:07:25,823
+by other pages, they themselves don't
+have many in links, then, well,
+
+105
+00:07:25,823 --> 00:07:27,360
+you don't get that much credit.
+
+106
+00:07:27,360 --> 00:07:29,760
+So that's the idea of
+getting indirect citation.
+
+107
+00:07:31,340 --> 00:07:35,540
+Right, so you can also understand
+this idea by looking at, again,
+
+108
+00:07:35,540 --> 00:07:36,550
+the research papers.
+
+109
+00:07:36,550 --> 00:07:42,860
+If you are cited by, let's say ten papers,
+and those ten papers are, just
+
+110
+00:07:42,860 --> 00:07:48,450
+workshop papers and that, or some papers
+that are not very influential, right,
+
+111
+00:07:49,580 --> 00:07:54,590
+so although you got ten in links,
+that's not as good as if you have,
+
+112
+00:07:54,590 --> 00:07:59,914
+you're cited by ten papers that themselves
+have attracted a lot of other citations.
+
+113
+00:07:59,914 --> 00:08:04,880
+So this is a case where
+
+114
+00:08:04,880 --> 00:08:09,570
+we would like to consider indirect
+links and PageRank does that.
+
+115
+00:08:09,570 --> 00:08:13,120
+The other idea is,
+it's good to smooth the citations.
+
+116
+00:08:13,120 --> 00:08:17,018
+Or, or, or
+assume that basically every page is
+
+117
+00:08:17,018 --> 00:08:21,120
+having a non-zero pseudo citation count.
+
+118
+00:08:21,120 --> 00:08:24,340
+Essentially, you are trying to imagine
+there are many virtual links that
+
+119
+00:08:24,340 --> 00:08:28,390
+will link all the pages together so
+that you,
+
+120
+00:08:28,390 --> 00:08:32,660
+you actually get pseudo
+citations from everyone.
+
+121
+00:08:34,360 --> 00:08:39,470
+The, the reason why they want to
+do that is this would allow them
+
+122
+00:08:39,470 --> 00:08:45,330
+to solve the problem elegantly
+with linear algebra technique.
+
+123
+00:08:47,540 --> 00:08:52,253
+So I think maybe the best
+way to understand the page
+
+124
+00:08:52,253 --> 00:08:57,060
+rank is through think of
+this as through computer,
+
+125
+00:08:57,060 --> 00:09:03,129
+the probability of a random surfer,
+visiting every web page, right.
+
+126
+00:09:03,129 --> 00:09:13,129
+[MUSIC]
+

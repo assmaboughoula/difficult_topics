@@ -1,0 +1,1077 @@
+1
+00:00:00,000 --> 00:00:02,885
+[SOUND].
+
+2
+00:00:06,445 --> 00:00:12,482
+This lecture is about how to do fast
+research by using inverted index.
+
+3
+00:00:12,482 --> 00:00:13,682
+In this lecture,
+
+4
+00:00:13,682 --> 00:00:18,490
+we are going to continue the discussion
+of the system implementation.
+
+5
+00:00:19,780 --> 00:00:21,791
+In particular, we're going to talk about,
+
+6
+00:00:21,791 --> 00:00:24,664
+to how to support a faster
+search by using inverted index.
+
+7
+00:00:27,200 --> 00:00:31,480
+So, let's think about what a general
+scoring function might look like.
+
+8
+00:00:32,720 --> 00:00:37,010
+Now, of curse the vector space
+model is a special case of this.
+
+9
+00:00:37,010 --> 00:00:40,830
+But we can imagine many other
+retrieval functions of the same form.
+
+10
+00:00:42,390 --> 00:00:45,077
+So, the form of this
+function is as follows.
+
+11
+00:00:45,077 --> 00:00:49,736
+We see this scoring
+function of document d, and
+
+12
+00:00:49,736 --> 00:00:56,920
+query q is defined as first, a function
+of f a that's adjustment in the function.
+
+13
+00:00:56,920 --> 00:01:01,876
+That what consider two
+factors that are shown
+
+14
+00:01:01,876 --> 00:01:07,770
+here at the end, f sub d of d,
+and f sub q of q.
+
+15
+00:01:07,770 --> 00:01:14,260
+These are adjustment factors
+of a document and query, so
+
+16
+00:01:14,260 --> 00:01:19,750
+they're at the level of document,
+and query.
+
+17
+00:01:19,750 --> 00:01:20,450
+So, and
+
+18
+00:01:20,450 --> 00:01:25,468
+then inside of this function we also see
+there's a another function called edge.
+
+19
+00:01:25,468 --> 00:01:32,080
+So, this is the main part of
+
+20
+00:01:32,080 --> 00:01:37,375
+the scoring function,
+and these as I just said
+
+21
+00:01:37,375 --> 00:01:44,200
+of the scoring factors at the level
+of the whole document, and the query.
+
+22
+00:01:44,200 --> 00:01:47,398
+For example, document and
+
+23
+00:01:47,398 --> 00:01:52,415
+this aggregate function would
+then combine all these.
+
+24
+00:01:52,415 --> 00:02:00,131
+Now, inside this h function,
+there are functions that would compute
+
+25
+00:02:00,131 --> 00:02:05,908
+the weights of the contribution
+of a matched query term t i.
+
+26
+00:02:08,665 --> 00:02:13,705
+So, this this g, the function g gives us
+
+27
+00:02:13,705 --> 00:02:19,426
+the weight of a matched query
+term t i in document d.
+
+28
+00:02:22,586 --> 00:02:27,587
+And this h function with that
+aggregate all these weights, so
+
+29
+00:02:27,587 --> 00:02:34,859
+it were, for example, take a sum, but
+it of all the matched query in that terms.
+
+30
+00:02:34,859 --> 00:02:39,950
+But it can also be a product, or
+could be another way of aggregate them.
+
+31
+00:02:41,240 --> 00:02:46,134
+And then finally, this adjustment
+function would then consider
+
+32
+00:02:46,134 --> 00:02:51,260
+the document level, or query level
+factors through further adjuster score,
+
+33
+00:02:51,260 --> 00:02:54,020
+for example, document lens [INAUDIBLE].
+
+34
+00:02:54,020 --> 00:02:58,960
+So, this general form would cover
+many state of original functions.
+
+35
+00:02:58,960 --> 00:03:02,360
+Let's look at how we can score such
+
+36
+00:03:02,360 --> 00:03:06,582
+score documents with such
+a function using inverted index.
+
+37
+00:03:07,610 --> 00:03:10,318
+So here's the general algorithm
+that works as follows.
+
+38
+00:03:10,318 --> 00:03:13,866
+First these these Query level and
+
+39
+00:03:13,866 --> 00:03:19,490
+document level factors can be
+pre-computed in the indexing term.
+
+40
+00:03:19,490 --> 00:03:22,510
+Of course, for the query,
+we have to compute it as a query term.
+
+41
+00:03:22,510 --> 00:03:28,160
+But for document, for example,
+document can be pre-computed.
+
+42
+00:03:28,160 --> 00:03:32,860
+And then we maintain a score accumulator
+for each document d to compute the h.
+
+43
+00:03:34,710 --> 00:03:39,420
+And h is aggregation function
+of all the matching query terms.
+
+44
+00:03:39,420 --> 00:03:40,360
+So how do we do that?
+
+45
+00:03:40,360 --> 00:03:45,770
+Well, for each query term,
+we going to do fetch inverted list,
+
+46
+00:03:45,770 --> 00:03:47,130
+from the inverted index.
+
+47
+00:03:47,130 --> 00:03:51,330
+This will give us all the documents
+that match this query term,
+
+48
+00:03:52,660 --> 00:03:57,640
+and that includes d1,
+f1, and so, d and fn.
+
+49
+00:03:57,640 --> 00:04:03,780
+So each pair is document id and
+the frequency of the term in the document.
+
+50
+00:04:03,780 --> 00:04:07,810
+Then for each entry d sub j and f sub j,
+
+51
+00:04:07,810 --> 00:04:12,290
+a particular match of the term in
+this particular document d sub j,
+
+52
+00:04:12,290 --> 00:04:15,690
+we're going to computer the function g.
+
+53
+00:04:15,690 --> 00:04:20,860
+That would give us something like
+a t of i, ef weights of this term.
+
+54
+00:04:20,860 --> 00:04:24,530
+So, we're computing the weight
+contribution of matching this query term
+
+55
+00:04:24,530 --> 00:04:26,170
+in this document.
+
+56
+00:04:26,170 --> 00:04:30,060
+And then we're going to update the score
+accumulator for this document.
+
+57
+00:04:31,310 --> 00:04:36,600
+And this would allow us to
+add this to our accumulator,
+
+58
+00:04:36,600 --> 00:04:40,300
+that would incrementally
+compute function h.
+
+59
+00:04:41,330 --> 00:04:46,970
+So this is basically a general
+way to allow sort of computer
+
+60
+00:04:46,970 --> 00:04:51,640
+all functions of this form,
+by using inverted index.
+
+61
+00:04:51,640 --> 00:04:54,930
+Note that we don't have to
+attach any document that that
+
+62
+00:04:54,930 --> 00:04:58,620
+didn't match any query term,
+but this is why it's fast.
+
+63
+00:04:58,620 --> 00:05:03,690
+We only need to process the documents that
+tap, that match at least one query term.
+
+64
+00:05:04,760 --> 00:05:08,320
+In the end, then we're going to
+adjust the score to compute a,
+
+65
+00:05:08,320 --> 00:05:11,600
+this function f of a and then we can sort.
+
+66
+00:05:11,600 --> 00:05:14,260
+So let's take a look at
+the specific example.
+
+67
+00:05:14,260 --> 00:05:17,880
+In this, case let's assume the scoring
+function's a very simple one.
+
+68
+00:05:17,880 --> 00:05:25,340
+It just takes us sum of tf, the rule of
+tf, the count of, of term in the document.
+
+69
+00:05:25,340 --> 00:05:31,340
+Now this simple equation with the help
+showing the algorithm clearly.
+
+70
+00:05:31,340 --> 00:05:36,430
+It's very easy to extend the,
+the computation to include other weights
+
+71
+00:05:36,430 --> 00:05:42,360
+like the transformation of TF or
+document or IDF weighting.
+
+72
+00:05:42,360 --> 00:05:47,890
+So let's take a look at specific example
+with the query's information security,
+
+73
+00:05:48,980 --> 00:05:54,600
+and shows some entries of
+the inverted index on the right side.
+
+74
+00:05:54,600 --> 00:05:56,800
+Information occurring before documents and
+
+75
+00:05:56,800 --> 00:06:01,270
+the frequencies is also there,
+security is coding three documents.
+
+76
+00:06:01,270 --> 00:06:04,040
+So, let's see how the algorithm works,
+all right?
+
+77
+00:06:04,040 --> 00:06:09,070
+So, first we iterate all the query terms,
+and we fetch the first query then.
+
+78
+00:06:09,070 --> 00:06:09,580
+What is that?
+
+79
+00:06:09,580 --> 00:06:11,380
+That's information.
+
+80
+00:06:11,380 --> 00:06:14,310
+Right?
+So, and imagine we have all these score
+
+81
+00:06:14,310 --> 00:06:19,820
+accumulators to score, score the,
+score the scores for these documents.
+
+82
+00:06:19,820 --> 00:06:21,740
+We can imagine there will be allocated,
+but
+
+83
+00:06:21,740 --> 00:06:24,660
+then they will only be
+allocated as needed.
+
+84
+00:06:24,660 --> 00:06:32,190
+So before we do any weighting of terms
+we don't even need a score accumulators.
+
+85
+00:06:33,270 --> 00:06:38,260
+But conceptual we have these score
+accumulators eventually allocated, right?
+
+86
+00:06:38,260 --> 00:06:43,120
+So let's fetch the,
+the entries from the inverted list for
+
+87
+00:06:43,120 --> 00:06:45,140
+information first, that's the first one.
+
+88
+00:06:46,260 --> 00:06:50,809
+So these score accumulators obviously
+would be initialized as zeros.
+
+89
+00:06:51,830 --> 00:06:53,950
+So the first entry is d1 and 3,
+
+90
+00:06:53,950 --> 00:06:58,650
+3 is occurrences of
+information in this document.
+
+91
+00:06:58,650 --> 00:07:03,910
+Since our scoring function assume that the
+score is just a sum of these raw counts.
+
+92
+00:07:03,910 --> 00:07:08,320
+We just need to add a 3 to the score
+accumulator to account for
+
+93
+00:07:08,320 --> 00:07:14,770
+the increase of score, due to matching
+this term information, a document d1.
+
+94
+00:07:14,770 --> 00:07:18,000
+And now we go to the next entry.
+
+95
+00:07:18,000 --> 00:07:22,460
+That's d2 and 4 and then we'll add
+a 4 to the score accumulator of d2.
+
+96
+00:07:22,460 --> 00:07:26,350
+Of course, at this point we will allocate
+the score accumulator as needed.
+
+97
+00:07:27,770 --> 00:07:33,490
+And so, at this point, we have located
+d1 and d2, and the next one is d3.
+
+98
+00:07:33,490 --> 00:07:39,560
+And we add 1, or we locate another score
+coming in the spot d3 and add 1 to it.
+
+99
+00:07:39,560 --> 00:07:44,503
+And finally,
+the d4 gets a 5 because the information
+
+100
+00:07:44,503 --> 00:07:50,450
+the term information occurred ti
+in five times in this document.
+
+101
+00:07:50,450 --> 00:07:54,035
+Okay, so this completes the processing
+of all the entries in the,
+
+102
+00:07:54,035 --> 00:07:56,500
+inverted index for information.
+
+103
+00:07:56,500 --> 00:08:00,080
+It's processed all the contributions
+of matching information in this
+
+104
+00:08:00,080 --> 00:08:01,830
+four documents.
+
+105
+00:08:01,830 --> 00:08:06,900
+So now our arrows will go to the next
+query term, that's security.
+
+106
+00:08:06,900 --> 00:08:10,799
+So, we're going to factor all
+the inverted index entries for security.
+
+107
+00:08:10,799 --> 00:08:13,410
+So in this case, there were three entries.
+
+108
+00:08:13,410 --> 00:08:15,500
+And we're going to go
+through each of them.
+
+109
+00:08:15,500 --> 00:08:18,320
+The first is d2 and 3.
+
+110
+00:08:18,320 --> 00:08:22,660
+And that means security occurred
+three times in d2, and what do we do?
+
+111
+00:08:22,660 --> 00:08:26,290
+Well, we do exactly the same as
+what we did for information.
+
+112
+00:08:26,290 --> 00:08:28,900
+So this time we're going
+to do change the score,
+
+113
+00:08:28,900 --> 00:08:32,230
+accumulating d2 sees
+it's already allocate.
+
+114
+00:08:32,230 --> 00:08:38,184
+And what we do is we'll add 3 to
+the existing value which is a 4,
+
+115
+00:08:38,184 --> 00:08:41,495
+so we now get the 7 for d2.
+
+116
+00:08:41,495 --> 00:08:46,519
+D2 sc, score is increased because of the
+match both information and the security.
+
+117
+00:08:47,850 --> 00:08:53,574
+Go to the next step entry, that's d4 and
+1, so we've updated the score for
+
+118
+00:08:53,574 --> 00:08:59,350
+d4,and again we add 1 to d4,
+so d4 goes from 5 to 6.
+
+119
+00:08:59,350 --> 00:09:01,930
+Finally we process d5 and 3.
+
+120
+00:09:01,930 --> 00:09:06,552
+SInce we have not yet
+equated a score accumulator d4 to d5,
+
+121
+00:09:06,552 --> 00:09:12,500
+at this point, we allocate one,
+45 and we're going to add 3 to it.
+
+122
+00:09:12,500 --> 00:09:20,450
+So, those scores on the last row
+are the final scores for these documents.
+
+123
+00:09:20,450 --> 00:09:27,080
+If our scoring function is just a,
+a simple sum of tf values.
+
+124
+00:09:27,080 --> 00:09:31,600
+Now what if we actually would like to,
+to do lands normalization.
+
+125
+00:09:31,600 --> 00:09:35,120
+Well we can do the normalization
+at this point for each document.
+
+126
+00:09:36,480 --> 00:09:40,490
+So to summarize this,
+all right so you can see we first
+
+127
+00:09:40,490 --> 00:09:44,670
+processed the information determine
+query term information, and
+
+128
+00:09:44,670 --> 00:09:49,520
+we process all the entries in
+the inverted index for this term.
+
+129
+00:09:49,520 --> 00:09:54,720
+Then we process the security,
+all right, let's think about
+
+130
+00:09:54,720 --> 00:09:59,739
+the what should be the order of processing
+here when we consider query terms?
+
+131
+00:10:00,920 --> 00:10:02,310
+It might make difference,
+
+132
+00:10:02,310 --> 00:10:07,670
+especially if we don't want to keep
+to keep all the score accumulators.
+
+133
+00:10:07,670 --> 00:10:12,520
+Let's say we only want to keep
+the most promising score accumulators.
+
+134
+00:10:12,520 --> 00:10:14,960
+What do you think it would be
+a good order to go through?
+
+135
+00:10:15,980 --> 00:10:20,660
+Would you go would you process
+a common term first or
+
+136
+00:10:20,660 --> 00:10:22,690
+would you process a rare term first?
+
+137
+00:10:24,460 --> 00:10:30,924
+The answer is we should go through we
+should process the rare term first.
+
+138
+00:10:30,924 --> 00:10:36,460
+A rare term will match fewer documents and
+then the score confusion will be higher,
+
+139
+00:10:36,460 --> 00:10:39,680
+because the IDF value will be higher and,
+and
+
+140
+00:10:39,680 --> 00:10:45,250
+then it allows us to attach
+the most diplomacy documents first.
+
+141
+00:10:45,250 --> 00:10:48,830
+So it helps pruning some non
+promising ones, if we don't need so
+
+142
+00:10:48,830 --> 00:10:51,130
+many documents to be returned to the user.
+
+143
+00:10:52,410 --> 00:10:55,840
+And so those are heuristics for
+further improving the accuracy.
+
+144
+00:10:55,840 --> 00:10:58,640
+Here can also see how we can
+incorporate the idea of weighting.
+
+145
+00:10:58,640 --> 00:10:59,850
+All right.
+
+146
+00:10:59,850 --> 00:11:03,560
+So they can [INAUDIBLE] when we
+incorporated a one way process each
+
+147
+00:11:03,560 --> 00:11:04,700
+query term.
+
+148
+00:11:04,700 --> 00:11:07,700
+When we fetch in word index we
+can fetch the document frequency,
+
+149
+00:11:07,700 --> 00:11:09,990
+and then we can compute the IDF.
+
+150
+00:11:09,990 --> 00:11:16,940
+Or maybe perhapsIDF value has already been
+pre-computed when we index the document.
+
+151
+00:11:16,940 --> 00:11:22,790
+At that time we already computed the IDF
+value that we can just fetch it.
+
+152
+00:11:22,790 --> 00:11:26,590
+So all these can be down at this time.
+
+153
+00:11:26,590 --> 00:11:30,640
+So that will mean one will process
+all the entries for information these
+
+154
+00:11:30,640 --> 00:11:35,140
+these weights would be adjusted by the
+same IDF, which is IDF for information.
+
+155
+00:11:36,590 --> 00:11:40,550
+So this is the basic idea of using
+inverted index for faster search, and
+
+156
+00:11:40,550 --> 00:11:46,410
+works well for all kinds of formulas that
+are of the general form and this generally
+
+157
+00:11:46,410 --> 00:11:51,239
+cov, the general form covers actually most
+state of the art retrieval functions.
+
+158
+00:11:53,750 --> 00:11:58,850
+So there are some tricks to further
+improve the efficiency ,some general mac
+
+159
+00:11:58,850 --> 00:12:02,250
+tech, techniques include caching.
+
+160
+00:12:02,250 --> 00:12:07,600
+This is just a to store some
+results of popular query's, so
+
+161
+00:12:07,600 --> 00:12:12,550
+that next time when you see the same query
+you simply return the stored results.
+
+162
+00:12:12,550 --> 00:12:17,900
+Similarly, you can also score the missed
+of inverted index in the memory for
+
+163
+00:12:17,900 --> 00:12:19,330
+popular term.
+
+164
+00:12:19,330 --> 00:12:22,010
+And if the query comes
+popular you will assume
+
+165
+00:12:22,010 --> 00:12:25,620
+it will fetch the inverted index for
+the same term again.
+
+166
+00:12:25,620 --> 00:12:28,620
+So keeping that in the memory would help.
+
+167
+00:12:28,620 --> 00:12:32,500
+And these are general techniques for
+improving efficiency.
+
+168
+00:12:32,500 --> 00:12:36,970
+We can also only keep the most promising
+accumulators because a user generally
+
+169
+00:12:36,970 --> 00:12:39,550
+doesn't want to examine so many documents.
+
+170
+00:12:39,550 --> 00:12:46,270
+We only want to return high quality
+subset of documents that likely ranked
+
+171
+00:12:47,510 --> 00:12:51,850
+on the top, in,in for that purpose
+we can then prune the accumulators.
+
+172
+00:12:51,850 --> 00:12:53,810
+We don't have to store
+all the accumulators.
+
+173
+00:12:53,810 --> 00:12:58,340
+At some point we just keep
+the highest value accumulators.
+
+174
+00:13:00,200 --> 00:13:06,680
+Another technique is to do parallel
+processing, and that's needed for
+
+175
+00:13:06,680 --> 00:13:12,000
+really processing such a large data set,
+like the web data set.
+
+176
+00:13:12,000 --> 00:13:15,082
+And to scale up to the Web-scale
+we need to special
+
+177
+00:13:15,082 --> 00:13:18,499
+to have the special techniques
+to do parallel processing and
+
+178
+00:13:18,499 --> 00:13:21,792
+to distribute the storage of
+files on multiple machines.
+
+179
+00:13:25,288 --> 00:13:29,694
+So here as a, here is a list of
+some text retrieval toolkits.
+
+180
+00:13:29,694 --> 00:13:31,860
+It's, it's not a complete list.
+
+181
+00:13:31,860 --> 00:13:36,150
+You can find the more information
+at this URL on the bottom.
+
+182
+00:13:37,380 --> 00:13:42,330
+Here I listed four here,
+lucene is one of the most popular toolkit
+
+183
+00:13:42,330 --> 00:13:45,440
+that can support a lot of applications.
+
+184
+00:13:45,440 --> 00:13:48,356
+And it has very nice support for
+applications.
+
+185
+00:13:48,356 --> 00:13:51,713
+You can use it to build
+a search engine very quickly,
+
+186
+00:13:51,713 --> 00:13:55,678
+the downside is that it's not
+that easy to extend it, and
+
+187
+00:13:55,678 --> 00:14:00,442
+the algorithms incremented there
+are not the most advanced algorithms.
+
+188
+00:14:00,442 --> 00:14:03,745
+Lemur or Indri is another toolkit that
+
+189
+00:14:03,745 --> 00:14:08,533
+that does not have such a nice
+support application as Lucene.
+
+190
+00:14:08,533 --> 00:14:12,660
+But it has many advanced
+search algorithms.
+
+191
+00:14:12,660 --> 00:14:14,460
+And it's also easy to extend.
+
+192
+00:14:16,410 --> 00:14:21,230
+Terrier is yet another toolkit
+that also has good support for
+
+193
+00:14:21,230 --> 00:14:25,350
+quotation capability and
+some advanced algorithms.
+
+194
+00:14:25,350 --> 00:14:32,120
+So that's maybe in between Lemur,
+or Lucene or
+
+195
+00:14:32,120 --> 00:14:38,070
+maybe rather combining the strands of
+both, so that's also useful toolkit.
+
+196
+00:14:38,070 --> 00:14:43,750
+MeTA is the toolkit that we'll use for
+the programming assignment,
+
+197
+00:14:43,750 --> 00:14:48,550
+and this is a new toolkit
+that has a combination
+
+198
+00:14:48,550 --> 00:14:54,200
+of both text retrieval algorithms and
+text mining algorithms.
+
+199
+00:14:54,200 --> 00:14:59,860
+And so, toolkit models are implement, they
+are, there are a number of text analysis
+
+200
+00:14:59,860 --> 00:15:06,720
+algorithms, implemented in the toolkit,
+as well as basic research algorithms.
+
+201
+00:15:06,720 --> 00:15:10,560
+So, to summarize all the discussion
+about the system implementation,
+
+202
+00:15:11,770 --> 00:15:14,875
+here are the major take away points.
+
+203
+00:15:14,875 --> 00:15:20,950
+Inverted index is the primary data
+structure for supporting a search engine.
+
+204
+00:15:20,950 --> 00:15:25,350
+That's the key to enable faster
+response to a user's query.
+
+205
+00:15:26,350 --> 00:15:31,900
+And the basic idea is process that,
+pre-process the data as much as we can,
+
+206
+00:15:31,900 --> 00:15:34,890
+and we want to do compression
+when appropriate.
+
+207
+00:15:34,890 --> 00:15:40,790
+So that we can save disk space and
+can speed up IO and
+
+208
+00:15:40,790 --> 00:15:43,240
+processing of the inverted
+index in general.
+
+209
+00:15:43,240 --> 00:15:47,755
+We'll talk about how we will construct
+the inverted index when the data
+
+210
+00:15:47,755 --> 00:15:49,485
+can fit into the memory.
+
+211
+00:15:49,485 --> 00:15:55,355
+And then we talk about faster search using
+inverted index, basically to exploit
+
+212
+00:15:55,355 --> 00:15:59,960
+the inverted index to accumulate scores
+for documents matching a query term.
+
+213
+00:15:59,960 --> 00:16:03,870
+And we exploit Zipf's law
+avoid touching many documents
+
+214
+00:16:03,870 --> 00:16:05,610
+that don't match any query term.
+
+215
+00:16:07,100 --> 00:16:11,820
+And this algorithm can, can support
+a wide range of ranking algorithms.
+
+216
+00:16:13,390 --> 00:16:18,490
+So these basic techniques have mm,
+have great potential for further scanning
+
+217
+00:16:18,490 --> 00:16:23,570
+output using distribution to withstand
+parallel processing and the caching.
+
+218
+00:16:23,570 --> 00:16:28,340
+Here are two additional readings that
+you can take a look at if you have time,
+
+219
+00:16:28,340 --> 00:16:31,050
+and are interested in
+learning more about this.
+
+220
+00:16:31,050 --> 00:16:38,928
+The first one is a classic textbook on the
+scare the efficiency of inverted index and
+
+221
+00:16:38,928 --> 00:16:43,877
+the compression techniques,
+and how to in general,
+
+222
+00:16:43,877 --> 00:16:50,140
+build a efficient search engine in
+terms of the space overhead and speed.
+
+223
+00:16:50,140 --> 00:16:54,562
+The second one is a newer textbook that
+has a nice discussion of implementing and
+
+224
+00:16:54,562 --> 00:16:56,217
+evaluating search engines.
+
+225
+00:16:56,217 --> 00:17:06,217
+[MUSIC]
+

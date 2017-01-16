@@ -1,0 +1,1035 @@
+1
+00:00:00,012 --> 00:00:04,774
+[SOUND].
+
+2
+00:00:07,738 --> 00:00:12,706
+In this lecture, we're going to talk about
+how to improve the instant changing of
+
+3
+00:00:12,706 --> 00:00:14,228
+the Vector Space Model.
+
+4
+00:00:17,458 --> 00:00:22,110
+This is the continued discussion
+of the Vector Space Model.
+
+5
+00:00:22,110 --> 00:00:30,010
+We're going to focus on how to improve
+the instant changing of this model.
+
+6
+00:00:30,010 --> 00:00:34,934
+In a previous lecture,
+you have seen that with simple
+
+7
+00:00:34,934 --> 00:00:39,477
+situations of the Vector Space Model,
+we can come up with
+
+8
+00:00:39,477 --> 00:00:44,211
+a simple scoring function that
+would give us, basically,
+
+9
+00:00:44,211 --> 00:00:49,440
+a count of how many unique query
+terms are matching the document.
+
+10
+00:00:50,570 --> 00:00:56,902
+We also have seen that this function
+has a problem as shown on this slide.
+
+11
+00:00:56,902 --> 00:01:00,260
+In particular,
+if you look at these three documents,
+
+12
+00:01:00,260 --> 00:01:05,230
+they will all get the same score because
+they match the three unique query words.
+
+13
+00:01:06,280 --> 00:01:10,540
+But intuitively we would like,
+d4 to be ranked above d3.
+
+14
+00:01:10,540 --> 00:01:13,070
+And d2 is really non relevant.
+
+15
+00:01:14,760 --> 00:01:20,470
+So the problem here is that
+this function couldn't capture
+
+16
+00:01:20,470 --> 00:01:22,590
+the following characteristics.
+
+17
+00:01:22,590 --> 00:01:27,280
+First, we would like to
+give more gratitude to d4
+
+18
+00:01:27,280 --> 00:01:32,184
+because it matches the presidential
+more times than d3.
+
+19
+00:01:32,184 --> 00:01:38,040
+Second, intuitively matching
+presidential should be more important
+
+20
+00:01:38,040 --> 00:01:43,090
+than matching about, because about is
+a very common word that occurs everywhere.
+
+21
+00:01:43,090 --> 00:01:44,980
+It doesn't really carry that much content.
+
+22
+00:01:47,470 --> 00:01:48,940
+So, in this lecture,
+
+23
+00:01:48,940 --> 00:01:52,191
+let's see how we can improve the model
+to solve these two problems.
+
+24
+00:01:53,950 --> 00:01:59,990
+It's worth thinking at this point about
+why do we have these four problems.
+
+25
+00:02:01,420 --> 00:02:04,690
+If we look back at
+the assumptions we have made
+
+26
+00:02:04,690 --> 00:02:08,996
+while substantiating the Vector
+Space Model, we will realize that
+
+27
+00:02:08,996 --> 00:02:15,200
+the problem is really coming
+from some of the assumptions.
+
+28
+00:02:15,200 --> 00:02:19,493
+In particular, it has to do with how we
+place the vectors in the vector space.
+
+29
+00:02:22,115 --> 00:02:25,301
+So then, naturally,
+in order to fix these problems,
+
+30
+00:02:25,301 --> 00:02:27,598
+we have to revisit those assumptions.
+
+31
+00:02:27,598 --> 00:02:31,559
+Perhaps, you will have
+to use different ways to
+
+32
+00:02:31,559 --> 00:02:34,735
+instantiate the Vector Space Model.
+
+33
+00:02:34,735 --> 00:02:41,448
+In particular, we have to place
+the vectors in a different way.
+
+34
+00:02:41,448 --> 00:02:45,722
+So, let's see how can we prove this?
+
+35
+00:02:45,722 --> 00:02:50,710
+Well, our natural thought is in order
+to consider multiple times of a term
+
+36
+00:02:50,710 --> 00:02:52,470
+in a document.
+
+37
+00:02:52,470 --> 00:02:57,270
+We should consider the term frequency
+instead of just the absence or presence.
+
+38
+00:02:57,270 --> 00:03:02,900
+In order to consider the difference
+between a document where a query
+
+39
+00:03:02,900 --> 00:03:07,620
+term occurred multiple times and the one
+where the query term occurred just once.
+
+40
+00:03:07,620 --> 00:03:13,130
+We have to concede a term frequency,
+the count of a term being in the document.
+
+41
+00:03:13,130 --> 00:03:18,200
+In the simplest model, we only model
+the presence and absence of a term.
+
+42
+00:03:18,200 --> 00:03:25,330
+We ignore the actual number of times
+that a term occurs in a document.
+
+43
+00:03:25,330 --> 00:03:26,750
+So let's add this back.
+
+44
+00:03:26,750 --> 00:03:31,588
+So we're going to do then represent
+a document by a vector with
+
+45
+00:03:31,588 --> 00:03:34,340
+term frequency as element.
+
+46
+00:03:34,340 --> 00:03:40,200
+So, that is to say, now,
+the elements of both the query vector and
+
+47
+00:03:40,200 --> 00:03:43,870
+the document vector will not be zero once,
+but
+
+48
+00:03:43,870 --> 00:03:49,490
+instead there will be the counts of
+a word in the query or the document.
+
+49
+00:03:52,130 --> 00:03:55,210
+So this would bring additional
+information about the document.
+
+50
+00:03:55,210 --> 00:04:00,640
+So this can be seen as a more accurate
+representation of our documents.
+
+51
+00:04:00,640 --> 00:04:03,880
+So, now let's see what the formula
+would look like if we change
+
+52
+00:04:03,880 --> 00:04:05,480
+this representation.
+
+53
+00:04:05,480 --> 00:04:10,390
+So as you see on this slide,
+we still use that product, and,
+
+54
+00:04:10,390 --> 00:04:14,270
+so the formula looks
+very similar in the form.
+
+55
+00:04:14,270 --> 00:04:18,900
+In fact, it looks identical, but
+inside of the sum of cos xi and
+
+56
+00:04:18,900 --> 00:04:20,390
+yi are now different.
+
+57
+00:04:21,390 --> 00:04:28,340
+They're now the counts of words
+i in the query and the document.
+
+58
+00:04:30,450 --> 00:04:35,917
+Now at this point, I also suggest you
+to pause the lecture for moment and
+
+59
+00:04:35,917 --> 00:04:41,860
+just we'll think about how we have
+interpret the score of this new function.
+
+60
+00:04:41,860 --> 00:04:47,710
+It's doing something very similar
+to what the simplest VSM is doing.
+
+61
+00:04:47,710 --> 00:04:50,070
+But because of the change of the vector,
+
+62
+00:04:51,320 --> 00:04:53,079
+now the new score has
+a different interpretation.
+
+63
+00:04:54,280 --> 00:04:55,270
+Can you see the difference?
+
+64
+00:04:56,390 --> 00:05:00,170
+And it has to do with
+the consideration of multiple
+
+65
+00:05:00,170 --> 00:05:03,360
+occurrences of the same
+time in the document.
+
+66
+00:05:03,360 --> 00:05:06,448
+More importantly, we''ll try to know
+whether this would fix the problem of
+
+67
+00:05:06,448 --> 00:05:07,860
+the simplest vector space model.
+
+68
+00:05:07,860 --> 00:05:12,310
+So, let's look at the this example again.
+
+69
+00:05:12,310 --> 00:05:16,660
+So suppose, we change the vector
+to term frequency vectors.
+
+70
+00:05:16,660 --> 00:05:20,628
+Now, let's look at these
+three documents again.
+
+71
+00:05:20,628 --> 00:05:25,940
+The query vector is the same because
+all these words occurred exactly once
+
+72
+00:05:25,940 --> 00:05:27,230
+in the query.
+
+73
+00:05:27,230 --> 00:05:29,360
+So the vector is still 0 1 vector.
+
+74
+00:05:31,210 --> 00:05:35,800
+And in fact,
+d2 is also essential in representing
+
+75
+00:05:35,800 --> 00:05:40,120
+the same way because none of these
+words has been repeated many times.
+
+76
+00:05:40,120 --> 00:05:44,642
+As a result, the score is also the same,
+still three.
+
+77
+00:05:44,642 --> 00:05:49,655
+The same issue for d3 and
+we still have a 3.
+
+78
+00:05:49,655 --> 00:05:53,807
+But d4 would be different, because now,
+
+79
+00:05:53,807 --> 00:05:57,391
+presidential occurred twice here.
+
+80
+00:05:57,391 --> 00:06:04,022
+So the end in the four presidential in
+the [INAUDIBLE] would be 2 instead of 1.
+
+81
+00:06:04,022 --> 00:06:08,327
+As a result, now the score for
+d4 is higher.
+
+82
+00:06:08,327 --> 00:06:09,875
+It's a four now.
+
+83
+00:06:09,875 --> 00:06:14,117
+So this means, by using term frequency,
+
+84
+00:06:14,117 --> 00:06:19,101
+we can now rank d4 above d2 and
+d3 as we hope to.
+
+85
+00:06:19,101 --> 00:06:23,830
+So this solve the problem with default.
+
+86
+00:06:26,190 --> 00:06:32,690
+But, we can also see that d2 and
+d3 are still featured in the same way.
+
+87
+00:06:32,690 --> 00:06:40,430
+They still have identical scores,
+so it did not fix the problem here.
+
+88
+00:06:40,430 --> 00:06:42,975
+So, how can we fix this problem?
+
+89
+00:06:42,975 --> 00:06:49,360
+We would like, to give more credit for
+matching presidential than matching about.
+
+90
+00:06:49,360 --> 00:06:52,110
+But how can we solve
+the problem in a general way?
+
+91
+00:06:53,290 --> 00:06:57,890
+Is there any way to determine which word
+should be treated more importantly and
+
+92
+00:06:57,890 --> 00:07:01,270
+which word can be, basically ignored.
+
+93
+00:07:02,720 --> 00:07:03,840
+About is such a word.
+
+94
+00:07:05,170 --> 00:07:09,680
+And which it does not really
+carry that much content,
+
+95
+00:07:09,680 --> 00:07:11,760
+we can essentially ignore that.
+
+96
+00:07:11,760 --> 00:07:14,868
+We sometimes call such a word,
+a stock word.
+
+97
+00:07:14,868 --> 00:07:18,346
+Those are generally very frequent and
+they occur everywhere,
+
+98
+00:07:18,346 --> 00:07:21,245
+matching it, doesn't really mean anything.
+
+99
+00:07:21,245 --> 00:07:24,718
+But computation how can we capture that?
+
+100
+00:07:24,718 --> 00:07:27,860
+So again, I encourage you to
+think a little bit about this.
+
+101
+00:07:29,460 --> 00:07:32,532
+Can you come up with any
+statistical approaches to somehow
+
+102
+00:07:32,532 --> 00:07:34,670
+distinguish presidential from about.
+
+103
+00:07:37,430 --> 00:07:41,375
+If you think about it for
+a moment, you realize that,
+
+104
+00:07:41,375 --> 00:07:46,170
+one difference is that a word
+like above occurs everywhere.
+
+105
+00:07:46,170 --> 00:07:50,930
+So if you count the currents of the water
+in the whole collection that we
+
+106
+00:07:50,930 --> 00:07:54,210
+would see that about as much higher for
+
+107
+00:07:54,210 --> 00:07:58,970
+this than presidential, which it tends
+to occur only in some documents.
+
+108
+00:08:01,000 --> 00:08:05,590
+So this idea suggests
+that we could somehow
+
+109
+00:08:05,590 --> 00:08:10,568
+use the global statistics of terms or
+some other formation to try to
+
+110
+00:08:10,568 --> 00:08:15,340
+down weight the element for
+
+111
+00:08:15,340 --> 00:08:18,850
+about in the vector representation of d2.
+
+112
+00:08:18,850 --> 00:08:21,730
+At the same time,
+
+113
+00:08:21,730 --> 00:08:27,620
+we hope to somehow increase the weight
+of presidential in the vector of d3.
+
+114
+00:08:29,570 --> 00:08:34,190
+If we can do that, then,
+we can expect that d2 will get
+
+115
+00:08:34,190 --> 00:08:39,240
+the overall score to be less than three,
+while d3 will get the score about three.
+
+116
+00:08:39,240 --> 00:08:42,550
+Then, we'll be able to
+rank d3 on top of d2.
+
+117
+00:08:45,380 --> 00:08:47,896
+So how can we do this systematically?
+
+118
+00:08:47,896 --> 00:08:51,041
+Again, we can rely on some
+steps that people count.
+
+119
+00:08:51,041 --> 00:08:55,850
+And in this case, the particular idea is
+called the Inverse Document Frequency.
+
+120
+00:08:57,360 --> 00:08:59,270
+We have seen document frequency.
+
+121
+00:08:59,270 --> 00:09:04,030
+As one signal used in,
+the moding retrieval functions.
+
+122
+00:09:05,800 --> 00:09:08,500
+We discussed this in a previous lecture.
+
+123
+00:09:08,500 --> 00:09:11,180
+So here's the specific way of using it.
+
+124
+00:09:11,180 --> 00:09:15,900
+Document frequency is the count of
+documents that contain a particular term.
+
+125
+00:09:15,900 --> 00:09:20,990
+Here, we say inverse document frequency
+because we actually want to reword a word
+
+126
+00:09:20,990 --> 00:09:22,700
+that doesn't occur in many documents.
+
+127
+00:09:24,880 --> 00:09:30,060
+And so, the way to incorporate this
+into our vector [INAUDIBLE] is
+
+128
+00:09:30,060 --> 00:09:35,030
+then to modify the frequency
+count by multiplying
+
+129
+00:09:35,030 --> 00:09:40,200
+it by the idea of the corresponding
+word as shown here.
+
+130
+00:09:40,200 --> 00:09:43,756
+If we didn't do that,
+then we can penalize common
+
+131
+00:09:43,756 --> 00:09:48,330
+words which generally have a low idea of,
+and
+
+132
+00:09:48,330 --> 00:09:54,290
+reward real words,
+which we're have a higher IDF.
+
+133
+00:09:56,340 --> 00:10:01,302
+So most specific [INAUDIBLE] IDF
+can be defined as the logarithm
+
+134
+00:10:01,302 --> 00:10:06,180
+of M plus one divided by k,
+where M is the total number of
+
+135
+00:10:06,180 --> 00:10:11,730
+documents in the collection,k is df or
+document frequency.
+
+136
+00:10:11,730 --> 00:10:15,278
+The total number of documents
+containing the word W.
+
+137
+00:10:15,278 --> 00:10:18,990
+Now, if you plot this
+function by varying k,
+
+138
+00:10:18,990 --> 00:10:23,420
+then you will see the curve
+that look like this.
+
+139
+00:10:23,420 --> 00:10:28,600
+In general, you can see it
+would give a higher value for
+
+140
+00:10:28,600 --> 00:10:30,630
+a low DF word, a rare word.
+
+141
+00:10:30,630 --> 00:10:38,710
+You can also see the maximum value
+of this function is log of M plus 1.
+
+142
+00:10:38,710 --> 00:10:46,900
+Will be interesting for you to think about
+what's minimum value for this function?
+
+143
+00:10:46,900 --> 00:10:48,470
+This could be interesting exercise.
+
+144
+00:10:51,180 --> 00:10:55,610
+Now, the specific function
+may not be as important as
+
+145
+00:10:55,610 --> 00:10:59,600
+the heuristic to simply
+penalize popular terms.
+
+146
+00:11:01,760 --> 00:11:05,780
+But it turns out this particular
+function form has also worked very well.
+
+147
+00:11:07,340 --> 00:11:12,250
+Now, whether there is a better
+form of function here,
+
+148
+00:11:12,250 --> 00:11:13,520
+is the open research question.
+
+149
+00:11:15,190 --> 00:11:20,810
+But, it's also clear that if we use
+a linear kernalization like what's
+
+150
+00:11:20,810 --> 00:11:27,200
+shown here with this line, then, it may
+not be as reasonable as the standard IDF.
+
+151
+00:11:27,200 --> 00:11:34,270
+In particular, you can see
+the difference in the standard IDF,
+
+152
+00:11:35,920 --> 00:11:41,110
+and we,
+somehow have a [INAUDIBLE] point here.
+
+153
+00:11:41,110 --> 00:11:45,770
+After this point, we're going to say these
+terms are essentially not very useful.
+
+154
+00:11:45,770 --> 00:11:48,180
+They can be essentially ignored.
+
+155
+00:11:48,180 --> 00:11:52,110
+And this makes sense when the term
+occurs so frequently, and
+
+156
+00:11:52,110 --> 00:11:57,310
+let's say a term occurs in more
+than 50% of the documents.
+
+157
+00:11:57,310 --> 00:12:01,980
+Then the term is unlikely very important
+and it's, it's basically, a common term.
+
+158
+00:12:01,980 --> 00:12:07,035
+It's not very important to match this
+word, so with the standard IDF, you can
+
+159
+00:12:07,035 --> 00:12:14,010
+see it's, basically, assumed that they all
+have lower weights, there's no difference.
+
+160
+00:12:14,010 --> 00:12:17,200
+But if you look at the linear
+kernelization, at this point there is,
+
+161
+00:12:17,200 --> 00:12:17,749
+there's some difference.
+
+162
+00:12:19,450 --> 00:12:26,220
+So intuitively, we want to focus more
+on the discrimination of low DF words,
+
+163
+00:12:26,220 --> 00:12:32,990
+rather than these common words.
+
+164
+00:12:32,990 --> 00:12:38,723
+Well, of course, which one works better,
+still has to be validated
+
+165
+00:12:38,723 --> 00:12:43,390
+by using the empirically related data set.
+
+166
+00:12:43,390 --> 00:12:46,910
+And we have to use users to
+judge which results of that.
+
+167
+00:12:48,590 --> 00:12:53,180
+So now let's see how this
+can solve problem two.
+
+168
+00:12:53,180 --> 00:12:55,000
+So now,
+let's look at the two documents again.
+
+169
+00:12:56,100 --> 00:13:00,530
+Now without IDF weighting, before,
+we just have [INAUDIBLE] vectors,
+
+170
+00:13:00,530 --> 00:13:05,720
+but with IDF weighting we
+now can adjust the DF weight
+
+171
+00:13:05,720 --> 00:13:09,500
+by multiplying the, with the IDF value.
+
+172
+00:13:09,500 --> 00:13:14,950
+For example here, you can see is
+the adjustment in particular for
+
+173
+00:13:14,950 --> 00:13:19,680
+about, there is an adjustment
+by using the IDF value of about
+
+174
+00:13:19,680 --> 00:13:23,980
+which is smaller than the IDF
+value of presidential.
+
+175
+00:13:23,980 --> 00:13:28,930
+So if you look at these,
+the IDF will distinguish these two words.
+
+176
+00:13:28,930 --> 00:13:34,390
+As a result, adjustment here would be
+larger, would make this weight larger.
+
+177
+00:13:37,190 --> 00:13:42,250
+So if we score with these new vectors, and
+
+178
+00:13:42,250 --> 00:13:48,740
+what would happen is that the, of course,
+they share the same weights for news and
+
+179
+00:13:48,740 --> 00:13:53,617
+the campaign, but the margin of about and
+presidential with this grouping may.
+
+180
+00:13:53,617 --> 00:14:01,250
+So now as a result of IDF weighting,
+we will have d3 to be ranked above d2.
+
+181
+00:14:01,250 --> 00:14:06,460
+Because it matched rail word,
+where as d2 matched common word.
+
+182
+00:14:06,460 --> 00:14:10,055
+So this shows that the idea of
+weighting can solve problem two.
+
+183
+00:14:13,040 --> 00:14:19,160
+So, how effective is this model in
+general when we use TF-IDF weighting?
+
+184
+00:14:19,160 --> 00:14:23,230
+Well, let's look at all these
+documents that we have seen before.
+
+185
+00:14:23,230 --> 00:14:28,090
+These are the new scores
+of the new documents.
+
+186
+00:14:28,090 --> 00:14:31,060
+But how effective is this
+new weighting method and
+
+187
+00:14:31,060 --> 00:14:32,576
+new scoring function, all right?
+
+188
+00:14:33,770 --> 00:14:38,510
+So now let's see overall how effective
+is this new ranking function
+
+189
+00:14:38,510 --> 00:14:40,610
+with TF-IDF Weighting?
+
+190
+00:14:40,610 --> 00:14:44,330
+Here, we show all the five documents
+that we have seen before, and
+
+191
+00:14:44,330 --> 00:14:45,720
+these are their scores.
+
+192
+00:14:47,000 --> 00:14:51,480
+Now, we can see the scores for
+the first four
+
+193
+00:14:51,480 --> 00:14:56,410
+documents here seem to
+be quite reasonable.
+
+194
+00:14:56,410 --> 00:14:57,650
+They are as we expected.
+
+195
+00:14:58,740 --> 00:15:01,128
+However, we also see a new problem.
+
+196
+00:15:01,128 --> 00:15:06,097
+Because now d5, here,
+which did not have a very high
+
+197
+00:15:06,097 --> 00:15:10,460
+score with our simplest
+vector space model.
+
+198
+00:15:10,460 --> 00:15:13,270
+Now, after it has a very high score.
+
+199
+00:15:13,270 --> 00:15:15,130
+In fact, it has the highest score here.
+
+200
+00:15:16,850 --> 00:15:18,990
+So, this creates a new problem.
+
+201
+00:15:18,990 --> 00:15:23,070
+This actually a common phenomenon
+in designing material functions.
+
+202
+00:15:23,070 --> 00:15:25,560
+Basically, when you try
+to fix one problem,
+
+203
+00:15:25,560 --> 00:15:27,960
+you tend to introduce other problems.
+
+204
+00:15:27,960 --> 00:15:33,450
+And that's why it's very tricky how
+to design effective ranking function.
+
+205
+00:15:33,450 --> 00:15:39,730
+And what's what's the best ranking
+function is the open research question.
+
+206
+00:15:39,730 --> 00:15:42,083
+Researchers are still working on that.
+
+207
+00:15:42,083 --> 00:15:47,869
+But in the next few lecture, we're
+going to also talk about some additional
+
+208
+00:15:47,869 --> 00:15:52,928
+ideas to further improve this model and
+try to fix this problem.
+
+209
+00:15:55,678 --> 00:15:57,536
+So to summarize this lecture,
+
+210
+00:15:57,536 --> 00:16:01,184
+we've talked about how to
+improve this vector space model.
+
+211
+00:16:01,184 --> 00:16:05,907
+And we've got to improve the [INAUDIBLE]
+of the vector space model based on
+
+212
+00:16:05,907 --> 00:16:07,310
+TF-IDF weighting.
+
+213
+00:16:08,470 --> 00:16:12,340
+So the improvement, most of it,
+is on the placement of the vector.
+
+214
+00:16:14,510 --> 00:16:20,155
+Where we give higher weight to a term
+that occurred many times in the document,
+
+215
+00:16:20,155 --> 00:16:23,330
+but infrequently in the whole collection.
+
+216
+00:16:23,330 --> 00:16:28,116
+And we have seen that this improved
+model indeed works better than
+
+217
+00:16:28,116 --> 00:16:33,352
+the simplest vector space model, but
+it also still has some problems.
+
+218
+00:16:33,352 --> 00:16:35,189
+In the next lecture,
+
+219
+00:16:35,189 --> 00:16:41,019
+we're going to look at the how to
+address these additional problems.
+
+220
+00:16:41,019 --> 00:16:51,019
+[MUSIC]
+

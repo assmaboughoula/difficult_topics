@@ -1,0 +1,595 @@
+1
+00:00:00,000 --> 00:00:06,823
+[MUSIC]
+
+2
+00:00:06,823 --> 00:00:10,306
+This lecture is a overview
+of text retrieval methods.
+
+3
+00:00:10,306 --> 00:00:17,840
+In the previous lecture we introduced
+you to the problem of text retrieval.
+
+4
+00:00:17,840 --> 00:00:22,350
+We explained that the main problem is
+to design a ranking function to rank
+
+5
+00:00:22,350 --> 00:00:24,780
+documents for a query.
+
+6
+00:00:24,780 --> 00:00:25,500
+In this lecture,
+
+7
+00:00:25,500 --> 00:00:31,040
+we will give a overview of different
+ways of designing this ranking function.
+
+8
+00:00:33,850 --> 00:00:35,750
+So the problem is the following.
+
+9
+00:00:35,750 --> 00:00:39,320
+We have a query that has
+a sequence of words, and
+
+10
+00:00:39,320 --> 00:00:44,460
+a document that, that's also a sequence of
+words, and we hope to define the function
+
+11
+00:00:44,460 --> 00:00:49,580
+f that can compute a score based
+on the query and document.
+
+12
+00:00:51,250 --> 00:00:54,780
+So the main challenge you here is with
+designing a good ranking function that can
+
+13
+00:00:54,780 --> 00:01:00,235
+rank all the relevant documents,
+on top of all the non-relevant ones.
+
+14
+00:01:00,235 --> 00:01:04,060
+Now clearly this means our
+function must be able to measure
+
+15
+00:01:04,060 --> 00:01:09,230
+the likelihood that a document
+d is relevant to a query q.
+
+16
+00:01:09,230 --> 00:01:15,210
+That also means we have to have
+some way to define relevance.
+
+17
+00:01:16,620 --> 00:01:20,370
+In particular in order to implement
+the program to do that we have to have
+
+18
+00:01:20,370 --> 00:01:25,640
+a computational definition of relevance,
+and we achieve this goal by
+
+19
+00:01:25,640 --> 00:01:30,390
+designing a retrieval model, which
+gives us a formalization of relevance.
+
+20
+00:01:32,650 --> 00:01:35,824
+Now, over many decades,
+researchers have designed
+
+21
+00:01:35,824 --> 00:01:40,680
+many different kinds of retrieval models,
+and they fall into different categories.
+
+22
+00:01:42,288 --> 00:01:48,530
+First, one fair many of the models
+are based on the similarity idea.
+
+23
+00:01:50,090 --> 00:01:55,350
+Basically, we assume that if
+a document is more similar to the query
+
+24
+00:01:55,350 --> 00:01:57,970
+than another document is,
+
+25
+00:01:57,970 --> 00:02:02,310
+then we would say the first document
+is more relevant than the second one.
+
+26
+00:02:02,310 --> 00:02:05,330
+So in this case,
+the ranking function is defined as
+
+27
+00:02:05,330 --> 00:02:08,550
+the similarity between the query and
+the document.
+
+28
+00:02:10,090 --> 00:02:13,520
+One well known example in this
+case is vector space model,
+
+29
+00:02:13,520 --> 00:02:16,819
+which we will cover more in
+detail later in the lecture.
+
+30
+00:02:19,697 --> 00:02:23,123
+The second kind of models
+are called probabilistic models.
+
+31
+00:02:23,123 --> 00:02:28,680
+In this family of models,
+we follow a very different strategy.
+
+32
+00:02:28,680 --> 00:02:31,470
+While we assume that queries and
+
+33
+00:02:31,470 --> 00:02:36,540
+documents are all observations
+from random variables, and
+
+34
+00:02:36,540 --> 00:02:41,260
+we assume there is a binary
+random variable called R here,
+
+35
+00:02:42,370 --> 00:02:45,480
+to indicate whether a document
+is relevant to a query.
+
+36
+00:02:46,530 --> 00:02:52,280
+We then define the score of document with
+respect to a query as is a probability
+
+37
+00:02:52,280 --> 00:02:59,780
+that this random variable R is equal to 1,
+given a particular document and query.
+
+38
+00:02:59,780 --> 00:03:03,270
+There are different cases
+of such a general idea.
+
+39
+00:03:04,470 --> 00:03:08,370
+One is classic probabilistic model,
+another is language model, yet
+
+40
+00:03:08,370 --> 00:03:10,800
+another is
+divergence-from-randomness model.
+
+41
+00:03:12,336 --> 00:03:15,830
+In a later lecture,
+we will talk more about the, one case,
+
+42
+00:03:15,830 --> 00:03:16,790
+which is language model.
+
+43
+00:03:18,160 --> 00:03:21,740
+The third kind of models of this
+is probabilistic inference.
+
+44
+00:03:21,740 --> 00:03:27,440
+So here the idea is to associate
+uncertainty to inference rules.
+
+45
+00:03:27,440 --> 00:03:32,347
+And we can then quantify the probability
+that we can show that the query
+
+46
+00:03:32,347 --> 00:03:34,356
+follows from the document.
+
+47
+00:03:35,976 --> 00:03:44,392
+Finally, there is also a family of models
+that are using axiomatic thinking.
+
+48
+00:03:44,392 --> 00:03:49,684
+Here the idea is to define
+a set of constraints that
+
+49
+00:03:49,684 --> 00:03:54,600
+we hope a good retrieval
+function to satisfy.
+
+50
+00:03:55,740 --> 00:03:57,820
+So in this case the problem is you seek
+
+51
+00:03:58,970 --> 00:04:04,060
+a good ranking function that can
+satisfy all the desired constraints.
+
+52
+00:04:06,120 --> 00:04:09,779
+Interestingly, although these different
+models are based on different thinking,
+
+53
+00:04:11,090 --> 00:04:17,920
+in the end the retrieval function
+tends to be very similar.
+
+54
+00:04:17,920 --> 00:04:22,020
+And these functions tend to
+also involve similar variables.
+
+55
+00:04:22,020 --> 00:04:26,910
+So now let's take a look at the, the
+common form of a state of that retrieval
+
+56
+00:04:26,910 --> 00:04:32,760
+model and examine some of the common
+ideas used in all these models.
+
+57
+00:04:33,900 --> 00:04:38,810
+First, these models are all
+based on the assumption
+
+58
+00:04:38,810 --> 00:04:42,930
+of using bag of words for
+representing text.
+
+59
+00:04:42,930 --> 00:04:47,500
+And we explained this in the natural
+language processing lecture.
+
+60
+00:04:47,500 --> 00:04:51,450
+Bag of words representation remains
+the main representation used in all
+
+61
+00:04:51,450 --> 00:04:52,310
+the search engines.
+
+62
+00:04:53,620 --> 00:04:58,530
+So, with this assumption,
+the score of a query like a presidential
+
+63
+00:04:58,530 --> 00:05:03,300
+campaign news,
+with respect to a document d here,
+
+64
+00:05:03,300 --> 00:05:08,130
+would be based on scores computed at,
+based on each individual word.
+
+65
+00:05:09,570 --> 00:05:15,690
+And that means the score would
+depend on the score of each word,
+
+66
+00:05:15,690 --> 00:05:19,510
+such as presidential, campaign, and news.
+
+67
+00:05:19,510 --> 00:05:23,990
+Here we can see there are three
+different components,
+
+68
+00:05:23,990 --> 00:05:29,120
+each corresponding to how well the
+document matches each of the query words.
+
+69
+00:05:31,630 --> 00:05:36,354
+Inside of these functions,
+we see a number of heuristics views.
+
+70
+00:05:37,868 --> 00:05:43,093
+So for example, one factor that
+affects the function g here is how
+
+71
+00:05:43,093 --> 00:05:48,037
+many times does the word
+presidential occur in the document?
+
+72
+00:05:48,037 --> 00:05:50,267
+This is called a Term Frequency or TF.
+
+73
+00:05:50,267 --> 00:05:55,665
+We might also denote as
+c of presidential and d.
+
+74
+00:05:55,665 --> 00:06:00,928
+In general if the word
+occurs more frequently in
+
+75
+00:06:00,928 --> 00:06:07,779
+the document then the value of
+this function would be larger.
+
+76
+00:06:07,779 --> 00:06:12,809
+Another factor is how
+long is the document, and
+
+77
+00:06:12,809 --> 00:06:17,870
+this is so
+to use the document length for score.
+
+78
+00:06:17,870 --> 00:06:22,840
+In general, if a term occurs in a long
+
+79
+00:06:22,840 --> 00:06:28,430
+document that many times,
+it's not as significant as
+
+80
+00:06:28,430 --> 00:06:32,690
+if it occurred the same number
+of times in a short document.
+
+81
+00:06:32,690 --> 00:06:39,067
+Because in the long document any term
+is expected to occur more frequently.
+
+82
+00:06:39,067 --> 00:06:44,445
+Finally, there is this factor called
+a document frequency, and that is we also
+
+83
+00:06:44,445 --> 00:06:49,360
+want to look at how often presidential
+occurs in the entire collection.
+
+84
+00:06:49,360 --> 00:06:54,271
+And we call this Document Frequency,
+or DF, of presidential.
+
+85
+00:06:54,271 --> 00:07:00,118
+And in some other models we
+might also use a probability
+
+86
+00:07:00,118 --> 00:07:04,577
+to characterize this information.
+
+87
+00:07:04,577 --> 00:07:09,770
+So here, I show the probability of
+presidential in the collection.
+
+88
+00:07:10,810 --> 00:07:13,860
+So all these are trying to
+characterize the popularity of
+
+89
+00:07:13,860 --> 00:07:15,590
+the term in the collection.
+
+90
+00:07:15,590 --> 00:07:18,430
+In general,
+matching a rare term in the collection
+
+91
+00:07:19,850 --> 00:07:23,860
+is contributing more to the overall
+score then matching a common term.
+
+92
+00:07:25,720 --> 00:07:30,523
+So this captures some of the main ideas
+used in pretty much all the state of
+
+93
+00:07:30,523 --> 00:07:32,349
+the art retrieval models.
+
+94
+00:07:34,000 --> 00:07:38,250
+So now, a natural question is
+which model works the best?
+
+95
+00:07:40,150 --> 00:07:46,580
+Now, it turns out that many models work
+equally well, so here I listed the four
+
+96
+00:07:46,580 --> 00:07:52,120
+major models that are generally regarded
+as a state of the art retrieval models.
+
+97
+00:07:52,120 --> 00:07:56,698
+Pivoted length normalization,
+BM25, query likelihood, PL2.
+
+98
+00:07:56,698 --> 00:08:02,285
+When optimized these models tend
+to perform similarly and this was,
+
+99
+00:08:02,285 --> 00:08:07,255
+discussed in detail in this reference
+at the end of this lecture.
+
+100
+00:08:07,255 --> 00:08:13,135
+Among all these,
+BM25 is probably the most popular.
+
+101
+00:08:13,135 --> 00:08:17,750
+It's most likely that this has been used
+in virtually all the search engines,
+
+102
+00:08:17,750 --> 00:08:21,720
+and you will also often see this
+method discussed in research papers.
+
+103
+00:08:22,778 --> 00:08:27,080
+And we'll talk more about this
+method later in some other lectures.
+
+104
+00:08:30,410 --> 00:08:36,770
+So, to summarize, the main points made
+in this lecture are, first the design
+
+105
+00:08:36,770 --> 00:08:41,580
+of a good ranking function pre-requires a
+computational definition of relevance, and
+
+106
+00:08:41,580 --> 00:08:45,310
+we achieve this goal by designing
+a proper retrieval model.
+
+107
+00:08:47,170 --> 00:08:52,260
+Second, many models are equally effective
+but we don't have a single winner here.
+
+108
+00:08:52,260 --> 00:08:55,550
+Researchers are still actively
+working on this problem,
+
+109
+00:08:55,550 --> 00:08:58,540
+trying to find a truly
+optimal retrieval model.
+
+110
+00:09:01,130 --> 00:09:04,780
+Finally, the state of the art
+ranking functions tend to rely on
+
+111
+00:09:04,780 --> 00:09:05,920
+the following ideas.
+
+112
+00:09:05,920 --> 00:09:08,990
+First, bag of words representation.
+
+113
+00:09:08,990 --> 00:09:14,730
+Second, TF and
+the document frequency of words.
+
+114
+00:09:14,730 --> 00:09:19,465
+Such information is used when
+ranking function to determine
+
+115
+00:09:19,465 --> 00:09:24,140
+the overall contribution of matching
+a word, and document length.
+
+116
+00:09:25,290 --> 00:09:29,380
+These are often combined in
+interesting ways and we'll discuss
+
+117
+00:09:29,380 --> 00:09:34,210
+how exactly they are combined to rank
+documents in the lectures later.
+
+118
+00:09:36,390 --> 00:09:40,610
+There are two suggested additional
+readings if you have time.
+
+119
+00:09:41,760 --> 00:09:45,150
+The first is a paper where you can
+find a detailed discussion and
+
+120
+00:09:45,150 --> 00:09:48,432
+comparison of multiple
+state of the art models.
+
+121
+00:09:49,840 --> 00:09:53,912
+The second, is a book with a chapter
+that gives a broad review of
+
+122
+00:09:53,912 --> 00:09:55,776
+different retrieval models.
+
+123
+00:09:55,776 --> 00:10:05,776
+[MUSIC]
+

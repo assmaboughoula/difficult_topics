@@ -1,0 +1,688 @@
+1
+00:00:00,025 --> 00:00:05,569
+[SOUND] This lecture is about
+
+2
+00:00:05,569 --> 00:00:13,773
+evaluation of text retrieval systems.
+
+3
+00:00:13,773 --> 00:00:20,360
+In the previous lectures, we have talked
+about a number of text retrieval methods.
+
+4
+00:00:20,360 --> 00:00:22,120
+Different kinds of ranking functions.
+
+5
+00:00:23,550 --> 00:00:26,070
+But how do we know which
+one works the best?
+
+6
+00:00:27,100 --> 00:00:29,390
+In order to answer this question,
+we have to compare them,
+
+7
+00:00:29,390 --> 00:00:33,000
+and that means we'll have to
+evaluate these retrieval methods.
+
+8
+00:00:34,780 --> 00:00:37,000
+So this is the main topic of this lecture.
+
+9
+00:00:40,440 --> 00:00:42,730
+First, let's think about why
+do we have to do evaluation?
+
+10
+00:00:42,730 --> 00:00:44,290
+I already gave one reason.
+
+11
+00:00:44,290 --> 00:00:45,027
+And that is,
+
+12
+00:00:45,027 --> 00:00:50,340
+we have to use evaluation to figure out
+which retrieval method works better.
+
+13
+00:00:50,340 --> 00:00:54,270
+Now this is very important for
+advancing our knowledge.
+
+14
+00:00:54,270 --> 00:00:58,120
+Otherwise we wouldn't know whether
+a new idea works better than old idea.
+
+15
+00:00:58,120 --> 00:01:03,170
+In the beginning of this
+course we talked about the,
+
+16
+00:01:03,170 --> 00:01:07,200
+the problem of text retrieval we
+compare it with database retrieval.
+
+17
+00:01:08,440 --> 00:01:14,390
+There, we mentioned that text retrieval
+is imperative to find the problem.
+
+18
+00:01:14,390 --> 00:01:17,451
+So, evaluation must rely on users,
+
+19
+00:01:17,451 --> 00:01:22,210
+which system works better,
+that would have to be judged by our users.
+
+20
+00:01:25,020 --> 00:01:28,810
+So this becomes very challenging problem.
+
+21
+00:01:28,810 --> 00:01:32,430
+Because how can we get users involved in,
+in matters, and
+
+22
+00:01:32,430 --> 00:01:34,899
+how can we draw a fair
+comparison of different methods.
+
+23
+00:01:37,460 --> 00:01:39,970
+So just go back to the reasons for
+evaluation.
+
+24
+00:01:41,260 --> 00:01:42,660
+I listed two reasons here.
+
+25
+00:01:42,660 --> 00:01:47,510
+The second reason is basically what I just
+said but there is also another reason,
+
+26
+00:01:47,510 --> 00:01:51,930
+which is to assess the actual
+utility of a test regional system.
+
+27
+00:01:51,930 --> 00:01:55,190
+Now imagine you're building
+your own applications.
+
+28
+00:01:55,190 --> 00:02:01,670
+Would be interested in knowing how well
+your search engine works for your users.
+
+29
+00:02:01,670 --> 00:02:04,030
+So in this case measures must
+
+30
+00:02:04,030 --> 00:02:07,850
+reflect the utility to the actual
+users in the the real application.
+
+31
+00:02:07,850 --> 00:02:11,840
+And typically, this has been
+done by using user studies and
+
+32
+00:02:11,840 --> 00:02:13,960
+using the real search engine.
+
+33
+00:02:16,340 --> 00:02:21,160
+In the second case or for
+the second reason, the measures
+
+34
+00:02:21,160 --> 00:02:25,130
+actually all need to be correlated
+with the utility to actual users.
+
+35
+00:02:26,185 --> 00:02:30,120
+Thus they don't have to accurately
+reflect the, the exact utility to users.
+
+36
+00:02:31,980 --> 00:02:37,680
+So the measure only needs to be good
+enough to tell which method works better.
+
+37
+00:02:38,860 --> 00:02:41,780
+And this is usually done
+through test collection.
+
+38
+00:02:41,780 --> 00:02:48,110
+And this is the main idea that we'll
+be talking about in this course.
+
+39
+00:02:48,110 --> 00:02:53,295
+This has been very important for
+comparing different algorithms and
+
+40
+00:02:53,295 --> 00:02:56,900
+for improving search
+engines systems in general.
+
+41
+00:02:58,910 --> 00:03:01,970
+So next we will talk
+about what to measure.
+
+42
+00:03:01,970 --> 00:03:07,000
+There are many aspects of a search engine
+we can measure, we can evaluate and
+
+43
+00:03:07,000 --> 00:03:09,000
+here I list the three major aspects.
+
+44
+00:03:09,000 --> 00:03:13,730
+One is effectiveness or accuracy,
+how accurate are the search results?
+
+45
+00:03:13,730 --> 00:03:18,110
+In this case we're measuring a system's
+capability of ranking relevant documents
+
+46
+00:03:18,110 --> 00:03:20,150
+on top of non relevant ones.
+
+47
+00:03:20,150 --> 00:03:21,850
+The second is efficiency.
+
+48
+00:03:21,850 --> 00:03:24,470
+How quickly can a user get the results?
+
+49
+00:03:24,470 --> 00:03:27,680
+How much computing resources
+are needed to answer a query?
+
+50
+00:03:27,680 --> 00:03:31,110
+So in this case we need to measure
+the space and time overhead of the system.
+
+51
+00:03:32,540 --> 00:03:34,870
+The third aspect is usability.
+
+52
+00:03:34,870 --> 00:03:38,950
+Basically the question is how useful
+is the system for real user tasks?
+
+53
+00:03:38,950 --> 00:03:44,140
+Here, obviously, interfaces and
+many other things are also important and
+
+54
+00:03:44,140 --> 00:03:45,870
+we typically would have
+to do user studies.
+
+55
+00:03:47,410 --> 00:03:51,750
+Now, in this course, we're going to talk
+more, mostly about the effectiveness and
+
+56
+00:03:51,750 --> 00:03:55,360
+accuracy measures because,
+the efficiency and
+
+57
+00:03:55,360 --> 00:04:00,780
+usability dimensions are, not really
+unique to search engines, and so,
+
+58
+00:04:02,810 --> 00:04:08,640
+they are, needed for
+evaluating any other software systems.
+
+59
+00:04:08,640 --> 00:04:12,330
+And there is also good coverage of
+such materials in other courses.
+
+60
+00:04:13,350 --> 00:04:18,780
+But how to evaluate a search engine
+is quite, you know accuracy is
+
+61
+00:04:18,780 --> 00:04:23,110
+something you need to text retrieval, and
+we're going to talk a lot about this.
+
+62
+00:04:23,110 --> 00:04:28,840
+The main idea that people have proposed
+before using a attitude, evaluate
+
+63
+00:04:28,840 --> 00:04:33,830
+a text retrieval algorithm, is called
+the Cranfield Evaluation Methodology.
+
+64
+00:04:33,830 --> 00:04:40,145
+This one actually was developed long
+time ago, developed in the 1960s.
+
+65
+00:04:40,145 --> 00:04:46,545
+It's a methodology for laboratory test
+of system components, it's actually
+
+66
+00:04:46,545 --> 00:04:50,880
+a methodology that has been very useful,
+not just for search engine evaluation.
+
+67
+00:04:50,880 --> 00:04:55,620
+But also for evaluating virtually
+all kinds of empirical tasks.
+
+68
+00:04:55,620 --> 00:05:01,240
+And, for example in processing or
+in other fields where the problem
+
+69
+00:05:01,240 --> 00:05:05,650
+is empirically defined we typically would
+need to use to use such a methodology.
+
+70
+00:05:05,650 --> 00:05:12,830
+And today was the big data challenge with
+the use of machine learning every where.
+
+71
+00:05:12,830 --> 00:05:17,440
+We general, this methodology has been very
+popular, but it was first developed for
+
+72
+00:05:17,440 --> 00:05:20,100
+search engine application in the 1960s.
+
+73
+00:05:20,100 --> 00:05:25,140
+So the basic idea of this approach is
+it'll build a reusable test collections
+
+74
+00:05:25,140 --> 00:05:26,200
+and define measures.
+
+75
+00:05:27,220 --> 00:05:30,350
+Once such a test collection is
+build it can be used again and
+
+76
+00:05:30,350 --> 00:05:32,998
+again to test the different algorithms.
+
+77
+00:05:32,998 --> 00:05:36,180
+And we're going to define measures
+that would allow you to quantify
+
+78
+00:05:36,180 --> 00:05:39,670
+performance of a system or
+an, an algorithm.
+
+79
+00:05:41,060 --> 00:05:42,708
+So how exactly would this work?
+
+80
+00:05:42,708 --> 00:05:45,760
+Well, we're going to do,
+have assembled collection of documents and
+
+81
+00:05:45,760 --> 00:05:50,010
+this is just similar to real document
+collection in your search application.
+
+82
+00:05:50,010 --> 00:05:53,210
+We can also have a sample
+set of queries or topics.
+
+83
+00:05:53,210 --> 00:05:55,240
+This is to simulate the user's queries.
+
+84
+00:05:56,290 --> 00:05:58,980
+Then we'll have to have
+relevance judgments.
+
+85
+00:05:58,980 --> 00:06:03,930
+These are judgments of which documents
+should be returned for which queries.
+
+86
+00:06:03,930 --> 00:06:08,250
+Ideally, they have to made by
+users who formulated the queries
+
+87
+00:06:08,250 --> 00:06:12,220
+because those are the people that know
+exactly what documents would be used for.
+
+88
+00:06:12,220 --> 00:06:17,210
+And then finally we have to have measures
+to quantify how well a system's result
+
+89
+00:06:17,210 --> 00:06:19,830
+matches the ideal ranked list.
+
+90
+00:06:19,830 --> 00:06:25,663
+That would be constructed and
+based on users' relevant judgements.
+
+91
+00:06:25,663 --> 00:06:30,700
+So this methodology is very useful for
+starting retrieval
+
+92
+00:06:30,700 --> 00:06:36,060
+algorithms because the test can actually,
+can be reused many times.
+
+93
+00:06:36,060 --> 00:06:41,340
+And it will also provide a fair
+comparison for all the methods.
+
+94
+00:06:41,340 --> 00:06:45,380
+We have the same criteria,
+same data set to use and
+
+95
+00:06:45,380 --> 00:06:47,570
+to compare different algorithms.
+
+96
+00:06:47,570 --> 00:06:51,960
+This allows us to compare a new
+algorithm with an old algorithm,
+
+97
+00:06:51,960 --> 00:06:53,780
+that was the method of many years ago.
+
+98
+00:06:53,780 --> 00:06:55,660
+By using the same standard.
+
+99
+00:06:55,660 --> 00:06:58,780
+So this is the illustration
+of how this works, so
+
+100
+00:06:58,780 --> 00:07:03,600
+as I said,
+we need a queries that are shown here.
+
+101
+00:07:03,600 --> 00:07:05,190
+We have Q1, Q2, et cetera.
+
+102
+00:07:05,190 --> 00:07:07,910
+We also need a documents, and
+that's called the document collection,
+
+103
+00:07:07,910 --> 00:07:11,430
+and on the right side,
+you see we need relevance judgment.
+
+104
+00:07:11,430 --> 00:07:19,150
+These are basically the binary judgments
+of documents with respect to a query.
+
+105
+00:07:19,150 --> 00:07:23,950
+So, for example D1 is judged
+as being relevant to Q1,
+
+106
+00:07:23,950 --> 00:07:26,600
+D2 is judged as being relevant as well.
+
+107
+00:07:26,600 --> 00:07:29,540
+And D3 is judged as non relevant
+in the two, Q1, et cetera.
+
+108
+00:07:30,560 --> 00:07:32,510
+These would be created by users.
+
+109
+00:07:34,190 --> 00:07:38,590
+Once we have these, and
+we basically have a test, correction, and
+
+110
+00:07:38,590 --> 00:07:42,760
+then, if you have two systems,
+you want to, compare them.
+
+111
+00:07:42,760 --> 00:07:47,380
+Then you can just run each
+system on these queries and
+
+112
+00:07:47,380 --> 00:07:50,580
+documents and
+each system will then return results.
+
+113
+00:07:50,580 --> 00:07:56,370
+Let's say if the query is Q1 and
+then we would have the results here,
+
+114
+00:07:56,370 --> 00:08:02,310
+here I show R sub A as
+results from system A.
+
+115
+00:08:02,310 --> 00:08:08,400
+So, this is remember we talked about
+task of computing approximation of the,
+
+116
+00:08:08,400 --> 00:08:09,880
+relevant document setter.
+
+117
+00:08:09,880 --> 00:08:15,380
+So A is,
+the system A's approximation here, and
+
+118
+00:08:15,380 --> 00:08:20,000
+also B is system B's approximation
+of relevant documents.
+
+119
+00:08:21,110 --> 00:08:22,810
+Now let's take a look at these results.
+
+120
+00:08:22,810 --> 00:08:24,210
+So which is better?
+
+121
+00:08:24,210 --> 00:08:26,520
+Now imagine for
+a user which one would you like?
+
+122
+00:08:26,520 --> 00:08:31,135
+All right lets take
+a look at both results.
+
+123
+00:08:31,135 --> 00:08:33,270
+And there are some differences and
+
+124
+00:08:33,270 --> 00:08:40,150
+there are some documents that
+are return to both systems.
+
+125
+00:08:40,150 --> 00:08:42,960
+But if you look at the results
+you will feel that well,
+
+126
+00:08:42,960 --> 00:08:48,640
+maybe an A is better in the sense that
+we don't have many number in documents.
+
+127
+00:08:48,640 --> 00:08:52,410
+And among the three documents returned
+the two of them are relevant, so
+
+128
+00:08:52,410 --> 00:08:55,430
+that's good, it's precise.
+
+129
+00:08:55,430 --> 00:08:59,610
+On the other hand can also
+say maybe B is better because
+
+130
+00:08:59,610 --> 00:09:02,880
+we've got more relevant documents,
+we've got three instead of two.
+
+131
+00:09:04,160 --> 00:09:06,819
+So which one is better and
+how do we quantify this?
+
+132
+00:09:08,820 --> 00:09:12,360
+Well obviously, this question
+highly depends on a user's task.
+
+133
+00:09:12,360 --> 00:09:14,820
+And, it depends on users as well.
+
+134
+00:09:14,820 --> 00:09:19,950
+You might be able to imagine, for
+some users may be system made is better.
+
+135
+00:09:19,950 --> 00:09:23,795
+If the user is not interested in
+getting all the relevant documents,
+
+136
+00:09:23,795 --> 00:09:27,760
+right, in this case this is
+the user doesn't have to read.
+
+137
+00:09:27,760 --> 00:09:31,020
+User would see most relevant documents.
+
+138
+00:09:31,020 --> 00:09:35,290
+On the other hand on one count,
+imagine user might need to have
+
+139
+00:09:35,290 --> 00:09:39,390
+as many relevant documents as possible,
+for example, taking a literature survey.
+
+140
+00:09:39,390 --> 00:09:40,820
+You might be in the second category, and
+
+141
+00:09:40,820 --> 00:09:44,020
+then you might find
+that system B's better.
+
+142
+00:09:44,020 --> 00:09:48,951
+So in either case, we'll have to also
+define measures that would quantify them.
+
+143
+00:09:48,951 --> 00:09:53,421
+And we might need to define
+multiple measures because
+
+144
+00:09:53,421 --> 00:09:57,994
+users have different perspectives
+of looking at results.
+
+145
+00:09:57,994 --> 00:10:07,994
+[MUSIC]
+

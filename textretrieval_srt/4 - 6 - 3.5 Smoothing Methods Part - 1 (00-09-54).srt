@@ -1,0 +1,620 @@
+1
+00:00:00,000 --> 00:00:05,545
+[SOUND]
+
+2
+00:00:07,837 --> 00:00:09,888
+This lecture is about the specific
+
+3
+00:00:09,888 --> 00:00:14,710
+smoothing methods for language models
+used in Probabilistic Retrieval Model.
+
+4
+00:00:16,560 --> 00:00:21,100
+In this lecture we will continue
+the discussion of language models for
+
+5
+00:00:21,100 --> 00:00:26,010
+information retrieval, particularly
+the query likelihood retrieval method.
+
+6
+00:00:26,010 --> 00:00:29,910
+And we're going to talk about
+the specific smoothing methods used for
+
+7
+00:00:29,910 --> 00:00:31,040
+such a retrieval function.
+
+8
+00:00:33,930 --> 00:00:37,990
+So, this is a slide from a previous
+lecture where we show that with
+
+9
+00:00:37,990 --> 00:00:42,420
+query likelihood ranking and the smoothing
+with the collection language model.
+
+10
+00:00:42,420 --> 00:00:48,841
+We end up having a retrieval function
+that looks like the following.
+
+11
+00:00:49,980 --> 00:00:53,510
+So, this is the retrieval function,
+
+12
+00:00:53,510 --> 00:00:57,395
+based on these assumptions
+that we have discussed.
+
+13
+00:00:57,395 --> 00:01:00,700
+You can see it's a sum of all
+the matched query terms here.
+
+14
+00:01:00,700 --> 00:01:06,790
+And inside the sum it's
+a count of term in the query,
+
+15
+00:01:06,790 --> 00:01:11,218
+and some weight for
+the term in the document.
+
+16
+00:01:11,218 --> 00:01:13,920
+We have TFI, TF weight here.
+
+17
+00:01:13,920 --> 00:01:18,150
+And then we have another constant here,
+in n.
+
+18
+00:01:20,300 --> 00:01:25,320
+So clearly, if we want to implement this
+function using a programming language,
+
+19
+00:01:25,320 --> 00:01:27,650
+we'll still need to figure
+out a few variables.
+
+20
+00:01:27,650 --> 00:01:32,800
+In particular, we're going to
+need to know how to estimate the,
+
+21
+00:01:32,800 --> 00:01:36,690
+probability of would exactly.
+
+22
+00:01:36,690 --> 00:01:39,000
+And how do we set alpha?
+
+23
+00:01:40,270 --> 00:01:44,400
+So in order to answer these questions,
+we have to think about this very specific
+
+24
+00:01:44,400 --> 00:01:47,760
+smoothing methods, and
+that is the main topic of this lecture.
+
+25
+00:01:48,900 --> 00:01:50,780
+We're going to talk about
+two smoothing methods.
+
+26
+00:01:50,780 --> 00:01:57,420
+The first is the simple linear
+interpolation, with a fixed coefficient.
+
+27
+00:01:57,420 --> 00:01:59,910
+And this is also called a Jelinek and
+Mercer smoothing.
+
+28
+00:02:01,170 --> 00:02:04,090
+So the idea is actually very simple.
+
+29
+00:02:04,090 --> 00:02:06,330
+This picture shows how we estimate
+
+30
+00:02:08,270 --> 00:02:12,440
+document language model by using
+maximum [INAUDIBLE] method,
+
+31
+00:02:12,440 --> 00:02:17,970
+that gives us word counts normalized by
+the total number of words in the text.
+
+32
+00:02:17,970 --> 00:02:22,700
+The idea of using this method is to
+
+33
+00:02:22,700 --> 00:02:26,480
+maximize the probability
+of the observed text.
+
+34
+00:02:26,480 --> 00:02:33,090
+As a result, if a word like network,
+is not observed in the text.
+
+35
+00:02:33,090 --> 00:02:36,220
+It's going to get zero probability,
+as shown here.
+
+36
+00:02:37,810 --> 00:02:42,600
+So the idea of smoothing, then,
+is to rely on collection average model,
+
+37
+00:02:42,600 --> 00:02:47,450
+where this word is not going to have
+a zero probability to help us decide
+
+38
+00:02:47,450 --> 00:02:50,850
+what non-zero probability should
+be assigned to such a word.
+
+39
+00:02:50,850 --> 00:02:55,560
+So, we can know that network as
+a non-zero probability here.
+
+40
+00:02:55,560 --> 00:03:01,200
+So, in this approach what we do is,
+we do a linear interpolation between
+
+41
+00:03:01,200 --> 00:03:05,000
+the maximum likelihood or estimate here
+and the collection language model.
+
+42
+00:03:05,000 --> 00:03:07,860
+And this controlled by
+the smoothing parameter, lambda.
+
+43
+00:03:07,860 --> 00:03:12,820
+Which is between 0 and 1.
+
+44
+00:03:12,820 --> 00:03:14,968
+So this is a smoothing parameter.
+
+45
+00:03:14,968 --> 00:03:19,920
+The larger lambda is the two the more
+smoothing we have, we will have.
+
+46
+00:03:21,030 --> 00:03:27,200
+So by mixing them together, we achieve the
+goal of assigning non-zero probability.
+
+47
+00:03:27,200 --> 00:03:29,060
+And these two are word in our network.
+
+48
+00:03:29,060 --> 00:03:31,410
+So let's see how it works for
+some of the words here.
+
+49
+00:03:32,440 --> 00:03:36,800
+For example if we compute to
+the smallest probability for text.
+
+50
+00:03:37,960 --> 00:03:41,610
+Now, the next one right here
+is made give us 10 over 100,
+
+51
+00:03:41,610 --> 00:03:43,210
+and that's going to be here.
+
+52
+00:03:44,320 --> 00:03:47,354
+But the connection probability is this, so
+
+53
+00:03:47,354 --> 00:03:51,295
+we just combine them together
+with this simple formula.
+
+54
+00:03:53,420 --> 00:03:58,095
+We can also see a, the word network.
+
+55
+00:03:58,095 --> 00:04:02,785
+Which used to have zero probability
+now is getting a non-zero
+
+56
+00:04:02,785 --> 00:04:05,305
+probability of this value.
+
+57
+00:04:05,305 --> 00:04:12,132
+And that's because the count is going
+to be zero for network here, but
+
+58
+00:04:12,132 --> 00:04:18,282
+this part is non zero and
+that's basically how this method works.
+
+59
+00:04:19,412 --> 00:04:26,150
+If you think about this and
+you can easily see now the alpha sub d
+
+60
+00:04:26,150 --> 00:04:31,110
+in this smoothing method is basically
+lambda because that's, remember,
+
+61
+00:04:31,110 --> 00:04:36,570
+the coefficient in front of
+the probability of the word given by
+
+62
+00:04:36,570 --> 00:04:39,000
+the collection language model here, right?
+
+63
+00:04:40,440 --> 00:04:42,109
+Okay, so
+this is the first smoothing method.
+
+64
+00:04:43,400 --> 00:04:49,880
+The second one is similar, but it has
+a find end for manual interpretation.
+
+65
+00:04:49,880 --> 00:04:54,540
+It's often called a duration of the ply or
+Bayesian smoothing.
+
+66
+00:04:54,540 --> 00:05:00,955
+So again here, we face the problem of
+zero probability for like network.
+
+67
+00:05:00,955 --> 00:05:05,745
+Again we'll use the collection
+language model, but
+
+68
+00:05:05,745 --> 00:05:08,960
+in this case we're going to combine
+them in a somewhat different ways.
+
+69
+00:05:08,960 --> 00:05:15,751
+The formula first can be seen as
+a interpolation of the maximum
+
+70
+00:05:15,751 --> 00:05:20,720
+and the collection
+language model as before.
+
+71
+00:05:20,720 --> 00:05:23,580
+As in the J M's [INAUDIBLE].
+
+72
+00:05:23,580 --> 00:05:28,470
+Only and after the coefficient [INAUDIBLE]
+is not the lambda, a fixed lambda, but
+
+73
+00:05:28,470 --> 00:05:31,430
+a dynamic coefficient in this form,
+
+74
+00:05:31,430 --> 00:05:36,760
+when mu is a parameter,
+it's a non, negative value.
+
+75
+00:05:36,760 --> 00:05:40,550
+And you can see if we
+set mu to a constant,
+
+76
+00:05:40,550 --> 00:05:44,630
+the effect is that a long document would
+actually get smaller coefficient here.
+
+77
+00:05:46,070 --> 00:05:47,900
+Right?
+Because a long document
+
+78
+00:05:47,900 --> 00:05:49,930
+we have a longer length.
+
+79
+00:05:49,930 --> 00:05:53,140
+Therefore, the coefficient
+is actually smaller.
+
+80
+00:05:53,140 --> 00:05:57,310
+And so a long document would have
+less smoothing as we would expect.
+
+81
+00:05:59,640 --> 00:06:05,780
+So this seems to make more sense
+than a fixed coefficient smoothing.
+
+82
+00:06:05,780 --> 00:06:10,180
+Of course,
+this part would be of this form, so
+
+83
+00:06:10,180 --> 00:06:12,080
+that the two coefficients would sum to 1.
+
+84
+00:06:12,080 --> 00:06:16,400
+Now, this is one way to understand
+that this is smoothing.
+
+85
+00:06:16,400 --> 00:06:21,080
+Basically, it means that it's
+a dynamic coefficient interpolation.
+
+86
+00:06:22,790 --> 00:06:25,310
+There is another way to
+understand this formula.
+
+87
+00:06:27,090 --> 00:06:31,620
+Which is even easier to remember and
+that's this side.
+
+88
+00:06:33,310 --> 00:06:38,440
+So it's easy to see we can rewrite
+this modern method in this form.
+
+89
+00:06:38,440 --> 00:06:43,730
+Now, in this form, we can easily see
+what change we have made to the maximum
+
+90
+00:06:43,730 --> 00:06:45,940
+estimator, which would be this part,
+right?
+
+91
+00:06:47,310 --> 00:06:50,100
+So it normalizes the count
+by the top elements.
+
+92
+00:06:52,300 --> 00:06:56,070
+So, in this form, we can see what we did,
+
+93
+00:06:56,070 --> 00:07:00,750
+is we add this to the count of every word.
+
+94
+00:07:01,800 --> 00:07:03,210
+So, what does this mean?
+
+95
+00:07:03,210 --> 00:07:04,950
+Well, this is basically
+
+96
+00:07:06,020 --> 00:07:10,390
+something relative to the probability
+of the word in the collection..
+
+97
+00:07:10,390 --> 00:07:13,260
+And we multiply that by the parameter mu.
+
+98
+00:07:14,510 --> 00:07:18,210
+And when we combine this
+with the count here,
+
+99
+00:07:18,210 --> 00:07:23,806
+essentially we are adding pseudo
+counts to the observed text.
+
+100
+00:07:23,806 --> 00:07:30,070
+We pretend every word,
+has got this many pseudocount.
+
+101
+00:07:31,090 --> 00:07:35,290
+So the total count would be
+the sum of these pseudocount and
+
+102
+00:07:35,290 --> 00:07:38,730
+the actual count of
+the word in the document.
+
+103
+00:07:39,950 --> 00:07:46,050
+As a result, in total, we would
+have added this minute pseudocount.
+
+104
+00:07:46,050 --> 00:07:48,990
+Why?
+Because if you take a sum of this,
+
+105
+00:07:48,990 --> 00:07:52,240
+this one, move over all the words and
+
+106
+00:07:52,240 --> 00:07:57,380
+we'll see the probability of the words
+would sum to 1, and that gives us just mu.
+
+107
+00:07:57,380 --> 00:08:00,200
+So this is the total number of
+pseudo counters that we added.
+
+108
+00:08:01,540 --> 00:08:05,260
+And, and so
+these probabilities would still sum to 1.
+
+109
+00:08:05,260 --> 00:08:12,510
+So in this case, we can easily
+see the method is essentially to
+
+110
+00:08:13,920 --> 00:08:18,130
+add these as a pseudocount to this data.
+
+111
+00:08:18,130 --> 00:08:21,320
+Pretend we actually augment the data
+
+112
+00:08:21,320 --> 00:08:26,480
+by including by some pseudo data defined
+by the collection language model.
+
+113
+00:08:26,480 --> 00:08:28,330
+As a result, we have more counts.
+
+114
+00:08:29,470 --> 00:08:35,710
+It's the, the total counts for, for
+word, a word that would be like this.
+
+115
+00:08:35,710 --> 00:08:39,880
+And, as a result,
+even if a word has zero counts here.
+
+116
+00:08:39,880 --> 00:08:43,580
+And say if we have zero come here and
+that it would still have none,
+
+117
+00:08:43,580 --> 00:08:47,300
+zero count because of this part, right?
+
+118
+00:08:47,300 --> 00:08:50,040
+And so this is how this method works.
+
+119
+00:08:50,040 --> 00:08:52,560
+Let's also take a look at
+this specific example here.
+
+120
+00:08:52,560 --> 00:08:58,580
+All right, so for text again,
+we will have 10 as original count.
+
+121
+00:08:58,580 --> 00:09:01,635
+That we actually observe but
+we also added some pseudocount.
+
+122
+00:09:03,000 --> 00:09:05,940
+And so, the probability of
+text would be of this form.
+
+123
+00:09:05,940 --> 00:09:10,100
+Naturally the probability of
+network would be just this part.
+
+124
+00:09:11,300 --> 00:09:14,410
+And so, here you can also
+see what's alpha sub d here.
+
+125
+00:09:15,600 --> 00:09:16,850
+Can you see it?
+
+126
+00:09:16,850 --> 00:09:19,050
+If you want to think about
+you can pause the video.
+
+127
+00:09:20,610 --> 00:09:25,830
+Have you noticed that this
+part is basically of a sub t?
+
+128
+00:09:25,830 --> 00:09:32,640
+So we can see this case of our sub t
+does depend on the document, right?
+
+129
+00:09:32,640 --> 00:09:39,211
+Because this lens depends on the document
+whereas in the linear interpolation.
+
+130
+00:09:39,211 --> 00:09:42,545
+The James move method
+this is the constant.
+
+131
+00:09:42,545 --> 00:09:52,545
+[MUSIC]
+

@@ -1,0 +1,212 @@
+1
+00:00:00,120 --> 00:00:08,484
+[SOUND]
+Hello
+
+2
+00:00:08,484 --> 00:00:12,312
+welcome to the course in
+Text Retrieval and Search Engines.
+
+3
+00:00:12,312 --> 00:00:13,984
+I'm Cheng Xiang Zhai.
+
+4
+00:00:13,984 --> 00:00:16,430
+I have a nickname Cheng.
+
+5
+00:00:16,430 --> 00:00:19,290
+I'm a professor of the Department
+of Computer Science at
+
+6
+00:00:19,290 --> 00:00:21,964
+the University of Illinois
+at Urbana-Champaign.
+
+7
+00:00:23,350 --> 00:00:27,080
+this first lecture is a basic
+introduction to the course.
+
+8
+00:00:27,080 --> 00:00:30,580
+A brief introduction to what
+we we'll cover in the course.
+
+9
+00:00:30,580 --> 00:00:34,810
+We're going to first talk about the data
+mining specialization since this course is
+
+10
+00:00:34,810 --> 00:00:36,280
+part of that specialization.
+
+11
+00:00:36,280 --> 00:00:41,390
+And then we'll cover motivation
+objectives of the course.
+
+12
+00:00:41,390 --> 00:00:47,020
+This will be followed by pre-requisites
+and course format and reference books.
+
+13
+00:00:48,440 --> 00:00:51,160
+And then finally we'll talk
+about the course schedule,
+
+14
+00:00:51,160 --> 00:00:56,419
+which has number of topics to be
+covered in the rest of this course.
+
+15
+00:00:57,540 --> 00:01:01,110
+So the data mining specialization
+offered by the University of Illinois
+
+16
+00:01:01,110 --> 00:01:06,080
+at Urbana-Champaign is really to address
+the need for data mining techniques to
+
+17
+00:01:06,080 --> 00:01:10,320
+handle a lot of big data,
+to turn the big data into knowledge.
+
+18
+00:01:10,320 --> 00:01:15,270
+There are five lecture-based courses,
+as you see on the slide.
+
+19
+00:01:15,270 --> 00:01:19,250
+Plus one capstone,
+project course in the end.
+
+20
+00:01:19,250 --> 00:01:23,190
+I'm teaching two of them which is
+this course, Text Retrieval and
+
+21
+00:01:23,190 --> 00:01:25,910
+Search Engines and this one.
+
+22
+00:01:25,910 --> 00:01:29,850
+So the two courses that I cover
+here are all about the text data.
+
+23
+00:01:31,058 --> 00:01:35,827
+In contrast, the other courses are
+covering more general techniques that can
+
+24
+00:01:35,827 --> 00:01:38,470
+be applied to all kinds of data.
+
+25
+00:01:38,470 --> 00:01:43,635
+So Patent Discovery taught by the
+Professor Jowi Han and Cluster Analysis
+
+26
+00:01:43,635 --> 00:01:49,480
+again taught by him about the general data
+mining techniques to handle structure.
+
+27
+00:01:49,480 --> 00:01:52,330
+The end and structure text data.
+
+28
+00:01:52,330 --> 00:01:57,229
+And data mine, data visualization
+covered by professor Jung Hart is about
+
+29
+00:01:57,229 --> 00:02:00,290
+the general visualization techniques.
+
+30
+00:02:00,290 --> 00:02:03,080
+Again applicable to all kinds of data.
+
+31
+00:02:03,080 --> 00:02:05,100
+So the motivation for this course.
+
+32
+00:02:05,100 --> 00:02:06,760
+In fact also for
+
+33
+00:02:06,760 --> 00:02:11,210
+the other courses that I'm teaching
+is that we have a lot of text data.
+
+34
+00:02:11,210 --> 00:02:15,130
+And the data is everywhere,
+is growing rapidly, so
+
+35
+00:02:15,130 --> 00:02:19,240
+you must have been
+experiencing this growth.
+
+36
+00:02:19,240 --> 00:02:23,000
+Just think about how much text data
+you're dealing with every day.
+
+37
+00:02:23,000 --> 00:02:26,610
+I listed some data types here, for
+
+38
+00:02:26,610 --> 00:02:30,710
+example, on the internet we see a lot
+of web pages, news articles etcetera.
+
+39
+00:02:30,710 --> 00:02:33,084
+And then we have block articles,
+
+40
+00:02:33,084 --> 00:02:37,450
+emails, scientific literature,
+tweets, as well speaking,
+
+41
+00:02:37,450 --> 00:02:43,070
+maybe a lot of tweets are being written,
+and a lot of emails are, are being sent.
+
+42
+00:02:43,070 --> 00:02:48,483
+So, the amount of text data is beyond
+our capacity to understand them.
+
+43
+00:02:48,483 --> 00:02:52,963
+Also, the amount of data makes it possible
+to actually analyze the data to discover
+
+44
+00:02:52,963 --> 00:02:57,585
+interesting knowledge and that's what
+we meant by, harnessing big text data.
+
+45
+00:02:57,585 --> 00:03:07,585
+[MUSIC]
+

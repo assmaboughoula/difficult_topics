@@ -1,0 +1,600 @@
+1
+00:00:00,012 --> 00:00:03,386
+[SOUND].
+
+2
+00:00:07,805 --> 00:00:11,866
+This lecture is about the vector
+space retrieval model.
+
+3
+00:00:11,866 --> 00:00:14,986
+We're going to give
+an introduction to its basic idea.
+
+4
+00:00:18,986 --> 00:00:23,771
+In the last lecture we talked about
+the different ways of designing
+
+5
+00:00:23,771 --> 00:00:28,990
+a retrieval model which would give
+us a different the ranking function.
+
+6
+00:00:30,260 --> 00:00:33,550
+In this lecture, we're going to
+talk about the, the specific way of
+
+7
+00:00:33,550 --> 00:00:36,550
+design the ramping function called
+a vector space mutual model.
+
+8
+00:00:37,750 --> 00:00:41,500
+And we're going to give a brief
+introduction to the basic idea.
+
+9
+00:00:44,330 --> 00:00:47,320
+Vector space model is a special case of
+
+10
+00:00:47,320 --> 00:00:50,810
+similarity based models
+as we discussed before.
+
+11
+00:00:50,810 --> 00:00:55,156
+Which means,
+we assume relevance is roughly
+
+12
+00:00:55,156 --> 00:00:59,450
+similarity between a document and a query.
+
+13
+00:01:02,130 --> 00:01:06,280
+Now whether this assumption is true,
+is actually a question.
+
+14
+00:01:06,280 --> 00:01:10,390
+But in order to solve our
+search problem we have to
+
+15
+00:01:10,390 --> 00:01:15,600
+convert the vague notion of
+relevance into a more precise
+
+16
+00:01:15,600 --> 00:01:21,670
+definition that can be implemented
+with the programming language.
+
+17
+00:01:21,670 --> 00:01:26,430
+So in this process we have to
+make a number of assumptions.
+
+18
+00:01:26,430 --> 00:01:31,510
+This is the first assumption
+that we make here.
+
+19
+00:01:31,510 --> 00:01:34,780
+Basically we assume that
+if a document is more
+
+20
+00:01:34,780 --> 00:01:37,670
+similar to a query than another document,
+
+21
+00:01:37,670 --> 00:01:41,140
+then the first document would be assumed
+to be more relevant than the second one.
+
+22
+00:01:41,140 --> 00:01:45,310
+And this is the basis for
+ranking documents in this approach.
+
+23
+00:01:46,800 --> 00:01:52,053
+Again, it's questionable whether this is
+really the best definition for relevance.
+
+24
+00:01:52,053 --> 00:01:55,280
+As we will see later there
+are other ways to model relevance.
+
+25
+00:01:55,280 --> 00:02:03,070
+The first idea of vector space retrieval
+model is actually very easy to understand.
+
+26
+00:02:03,070 --> 00:02:10,300
+Imagine a high dimensional space, where
+each dimension corresponds to a term.
+
+27
+00:02:11,650 --> 00:02:16,340
+So, here, I show a three
+dimensional space with three words,
+
+28
+00:02:16,340 --> 00:02:19,270
+programming, library, and presidential.
+
+29
+00:02:21,120 --> 00:02:23,260
+So each term, here, defines one dimension.
+
+30
+00:02:24,360 --> 00:02:29,200
+Now we can consider vectors in
+this three dimensional space.
+
+31
+00:02:29,200 --> 00:02:32,300
+And we're going to assume
+all our documents and
+
+32
+00:02:32,300 --> 00:02:35,160
+the query will be placed
+in this vector space.
+
+33
+00:02:35,160 --> 00:02:42,840
+So, for example, one document that might
+be represented at by this vector, d1.
+
+34
+00:02:44,250 --> 00:02:50,360
+Now this means this document probably
+covers library and presidential.
+
+35
+00:02:50,360 --> 00:02:52,770
+But it doesn't really
+talk about programming.
+
+36
+00:02:54,690 --> 00:03:00,270
+All right, what does this mean in
+terms of presentation of document?
+
+37
+00:03:00,270 --> 00:03:01,530
+That just means,
+
+38
+00:03:01,530 --> 00:03:05,680
+we're going to look at our document
+from the perspective of this vector.
+
+39
+00:03:05,680 --> 00:03:07,910
+We're going to ignore everything else.
+
+40
+00:03:07,910 --> 00:03:12,920
+Basically what we see here is
+only the vector of the document.
+
+41
+00:03:14,470 --> 00:03:16,390
+Of course the document
+has other information.
+
+42
+00:03:16,390 --> 00:03:19,264
+For example,
+the orders of words are simply ignored and
+
+43
+00:03:19,264 --> 00:03:22,580
+that's because we're
+assume that the words.
+
+44
+00:03:24,950 --> 00:03:28,430
+So with this representation
+you have already seen, d1,
+
+45
+00:03:28,430 --> 00:03:31,920
+seems to suggest a topic in
+either presidential library.
+
+46
+00:03:33,750 --> 00:03:36,250
+Now this is different
+from another document.
+
+47
+00:03:36,250 --> 00:03:39,080
+Which might be represented as
+a different vector, d2 here.
+
+48
+00:03:39,080 --> 00:03:43,216
+Now in this case, the document that
+covers programming and library, but
+
+49
+00:03:43,216 --> 00:03:45,429
+it doesn't talk about presidential.
+
+50
+00:03:46,940 --> 00:03:48,830
+So what does this remind you?
+
+51
+00:03:48,830 --> 00:03:54,650
+Well, you can probably guess, the topic
+is likely about program language and
+
+52
+00:03:54,650 --> 00:03:56,920
+the library is software library, library.
+
+53
+00:03:58,680 --> 00:04:04,110
+So this shows that by using this
+vector space representation,
+
+54
+00:04:04,110 --> 00:04:08,190
+we can actually capture the differences
+between topics of documents.
+
+55
+00:04:09,600 --> 00:04:12,190
+Now you can also imagine
+there are other vectors.
+
+56
+00:04:12,190 --> 00:04:12,690
+For example,
+
+57
+00:04:12,690 --> 00:04:18,150
+d3 is pointing in that direction, that
+might be about presidential programming.
+
+58
+00:04:18,150 --> 00:04:21,710
+And in fact we're going to place all
+the documents in this vector space.
+
+59
+00:04:22,920 --> 00:04:26,700
+And they will be pointing
+to all kinds of directions.
+
+60
+00:04:26,700 --> 00:04:30,870
+And similarly, we're going to place
+our query also in this space,
+
+61
+00:04:30,870 --> 00:04:31,570
+as another vector.
+
+62
+00:04:32,620 --> 00:04:37,610
+And then we're going to measure the
+similarity between the query vector and
+
+63
+00:04:37,610 --> 00:04:39,500
+every document vector.
+
+64
+00:04:39,500 --> 00:04:45,110
+So, in this case for example, we can
+easily see d2 seems to be the closest of,
+
+65
+00:04:45,110 --> 00:04:50,040
+to this query factor and
+therefore d2 will be ranked above others.
+
+66
+00:04:51,890 --> 00:04:56,570
+So this was a, basically the main
+idea of the, the vector space model.
+
+67
+00:04:58,330 --> 00:05:04,050
+So to be more pri,
+precise, be more precise.
+
+68
+00:05:04,050 --> 00:05:09,000
+Vector space model is a framework.
+
+69
+00:05:09,000 --> 00:05:12,510
+In this framework,
+we make the following assumptions.
+
+70
+00:05:12,510 --> 00:05:17,340
+First, we represent a document and
+query by a term vector.
+
+71
+00:05:18,650 --> 00:05:21,670
+So here a term can be any basic concept.
+
+72
+00:05:21,670 --> 00:05:28,920
+For example, a word or a phrase,
+or even enneagram of characters.
+
+73
+00:05:28,920 --> 00:05:32,880
+Those are a sequence of
+characters inside a word.
+
+74
+00:05:34,460 --> 00:05:37,400
+Each term is assumed to
+define one dimension.
+
+75
+00:05:37,400 --> 00:05:38,690
+Therefore N terms.
+
+76
+00:05:38,690 --> 00:05:42,380
+In our vocabulary,
+we define N-dimensional space.
+
+77
+00:05:44,060 --> 00:05:49,610
+A query vector would consist
+of a number of elements
+
+78
+00:05:49,610 --> 00:05:54,064
+corresponding to the weights
+of different terms.
+
+79
+00:05:54,064 --> 00:05:59,540
+Each document vector is also similar.
+
+80
+00:05:59,540 --> 00:06:04,440
+It has a number of elements and
+each value of each element
+
+81
+00:06:05,660 --> 00:06:08,370
+is indicating that weight
+of the corresponding term.
+
+82
+00:06:09,610 --> 00:06:12,410
+Here you can see,
+we have seen there are N dimensions.
+
+83
+00:06:12,410 --> 00:06:14,465
+Therefore, there are N elements,
+
+84
+00:06:15,535 --> 00:06:18,735
+each corresponding to the weight
+on the particular term.
+
+85
+00:06:21,385 --> 00:06:26,170
+So the relevance in this case would
+be assume to be the similarity
+
+86
+00:06:26,170 --> 00:06:31,020
+between the two vectors,
+therefore our range in function is
+
+87
+00:06:31,020 --> 00:06:35,730
+also defined as the similarity between
+the query vector and document vector.
+
+88
+00:06:37,570 --> 00:06:41,780
+Now, if I ask you to write the program
+to the internet this approach
+
+89
+00:06:41,780 --> 00:06:42,370
+in the search engine.
+
+90
+00:06:44,030 --> 00:06:47,450
+You would realize that this
+was far from clear, right?
+
+91
+00:06:48,460 --> 00:06:51,910
+We haven't seen a lot of things in detail
+
+92
+00:06:51,910 --> 00:06:56,080
+therefore it's impossible to actually
+write the program to implement this.
+
+93
+00:06:56,080 --> 00:06:58,110
+That's why I said this is a framework.
+
+94
+00:06:59,370 --> 00:07:03,310
+And this has to be refined
+in order to actually
+
+95
+00:07:04,350 --> 00:07:08,720
+suggest a particular function,
+that you can implement on the computer.
+
+96
+00:07:10,890 --> 00:07:13,810
+So, what does this framework not serve?
+
+97
+00:07:13,810 --> 00:07:17,800
+Well, it actually hasn't set many things
+
+98
+00:07:17,800 --> 00:07:22,510
+that would be required in order
+to implement this function.
+
+99
+00:07:24,450 --> 00:07:30,510
+First, it did not say how we should define
+or select the basic concepts exactly.
+
+100
+00:07:32,550 --> 00:07:36,180
+We clearly assume
+the concepts are orthogonal,
+
+101
+00:07:36,180 --> 00:07:38,660
+otherwise there will be redundancy.
+
+102
+00:07:38,660 --> 00:07:45,520
+For example, if two synonyms are somehow
+distinguished as two different concepts.
+
+103
+00:07:45,520 --> 00:07:48,750
+Then they would be defined
+in two different dimensions.
+
+104
+00:07:48,750 --> 00:07:53,470
+And then that would clearly
+cause a redundancy here.
+
+105
+00:07:54,870 --> 00:08:01,610
+Or overemphasizing of
+matching this concept.
+
+106
+00:08:01,610 --> 00:08:05,900
+Because it would be as if you
+matched the two dimensions
+
+107
+00:08:05,900 --> 00:08:08,730
+when you actually matched
+one semantic concept.
+
+108
+00:08:11,410 --> 00:08:16,120
+Secondly, it did not say how we
+exactly should place documents and
+
+109
+00:08:16,120 --> 00:08:18,200
+query in this space.
+
+110
+00:08:18,200 --> 00:08:22,970
+Basically I show you some examples
+of query and document vectors.
+
+111
+00:08:22,970 --> 00:08:27,215
+But where exactly should the vector for
+a particular document point to?
+
+112
+00:08:27,215 --> 00:08:33,930
+[INAUDIBLE] So this is equivalent
+to how to define the term weights.
+
+113
+00:08:33,930 --> 00:08:37,980
+How do you computer use element
+values in those vectors?
+
+114
+00:08:39,420 --> 00:08:44,100
+This is a very important
+question because term weight
+
+115
+00:08:44,100 --> 00:08:47,220
+in the query vector indicates
+the importance of term.
+
+116
+00:08:48,810 --> 00:08:51,460
+So depending on how you assign the weight,
+
+117
+00:08:51,460 --> 00:08:56,600
+you might prefer some terms
+to be matched over others.
+
+118
+00:08:56,600 --> 00:08:59,720
+Similarly, term weight in
+the document is also very meaningful.
+
+119
+00:08:59,720 --> 00:09:02,649
+It indicates how well the term
+characterizes the document.
+
+120
+00:09:03,830 --> 00:09:08,620
+If you got it wrong, then you clearly
+don't represent this document accurately.
+
+121
+00:09:10,150 --> 00:09:13,257
+Finally, how we define the similarity
+measure is also not clear.
+
+122
+00:09:15,600 --> 00:09:20,400
+So these questions must be addressed
+before we can have an operational
+
+123
+00:09:20,400 --> 00:09:24,620
+function that we can actually
+implement using a program language.
+
+124
+00:09:25,890 --> 00:09:32,081
+So how do we solve these problems
+
+125
+00:09:32,081 --> 00:09:39,430
+is the main topic of the next lecture.
+
+126
+00:09:39,430 --> 00:09:44,589
+[MUSIC]
+

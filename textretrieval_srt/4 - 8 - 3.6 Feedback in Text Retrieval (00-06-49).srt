@@ -1,0 +1,464 @@
+1
+00:00:00,000 --> 00:00:05,731
+[SOUND] This lecture is about
+
+2
+00:00:05,731 --> 00:00:12,712
+the Feedback in Text Retrieval.
+
+3
+00:00:12,712 --> 00:00:14,176
+So, in this lecture,
+
+4
+00:00:14,176 --> 00:00:18,503
+we're going to continue the discussion
+on text retrieval methods.
+
+5
+00:00:18,503 --> 00:00:24,713
+In particular, we're going to talk
+about Feedback in Text Retrieval.
+
+6
+00:00:24,713 --> 00:00:30,461
+This is a diagram that shows
+the retrieval process.
+
+7
+00:00:30,461 --> 00:00:34,906
+We can see the user would
+typed in a query and
+
+8
+00:00:34,906 --> 00:00:40,217
+then the query would be sent
+to a Retrieval Engine or
+
+9
+00:00:40,217 --> 00:00:45,670
+search engine and
+the engine would return results.
+
+10
+00:00:45,670 --> 00:00:49,438
+These results would be shown to the user.
+
+11
+00:00:49,438 --> 00:00:55,253
+After the user has seen these results,
+the user can actually make judgments.
+
+12
+00:00:55,253 --> 00:00:58,673
+So for example, the user has say,
+well, this is good and
+
+13
+00:00:58,673 --> 00:01:00,753
+this document is not very useful.
+
+14
+00:01:00,753 --> 00:01:03,045
+This is good again, et cetera.
+
+15
+00:01:03,045 --> 00:01:07,869
+Now this is called a relevance judgment or
+Relevance Feedback, because we've
+
+16
+00:01:07,869 --> 00:01:12,336
+got some feedback information from
+the user based on the judgments.
+
+17
+00:01:12,336 --> 00:01:14,712
+This can be very useful to the system.
+
+18
+00:01:14,712 --> 00:01:18,170
+Learn what exactly is
+interesting to the user.
+
+19
+00:01:18,170 --> 00:01:22,218
+So the feedback module would
+then take this as input and
+
+20
+00:01:22,218 --> 00:01:26,712
+also use the document collection
+to try to improve ranking.
+
+21
+00:01:26,712 --> 00:01:30,080
+Typically, it would involve
+updating the query.
+
+22
+00:01:30,080 --> 00:01:34,711
+So the system can now rank the results
+more accurately for the user.
+
+23
+00:01:34,711 --> 00:01:36,920
+So this is called Relevance Feedback.
+
+24
+00:01:36,920 --> 00:01:42,170
+The feedback is based on relevance
+judgements made by the users.
+
+25
+00:01:42,170 --> 00:01:44,860
+Now these judgements are reliable, but
+
+26
+00:01:44,860 --> 00:01:50,253
+the users generally don't want to make
+extra effort, unless they have to.
+
+27
+00:01:50,253 --> 00:01:57,003
+So the downside's that involves
+some extra effort by the user.
+
+28
+00:01:57,003 --> 00:02:00,663
+There is another form of feedback
+called a Pseudo Relevance Feedback,
+
+29
+00:02:00,663 --> 00:02:03,860
+or a blind feedback also
+called an automatic feedback.
+
+30
+00:02:03,860 --> 00:02:08,645
+In this case, you can see once
+the user has got without an effect,
+
+31
+00:02:08,645 --> 00:02:11,086
+we don't have to involve users.
+
+32
+00:02:11,086 --> 00:02:14,730
+So you can see there's
+no user involved here.
+
+33
+00:02:14,730 --> 00:02:19,628
+And we simply assume that the top
+ranked documents to be relevant.
+
+34
+00:02:19,628 --> 00:02:24,878
+Let's say,
+we have assumed the top ten is relevant.
+
+35
+00:02:24,878 --> 00:02:28,989
+And then we will then use these assumed
+
+36
+00:02:28,989 --> 00:02:33,878
+documents to learn and
+to improve the query.
+
+37
+00:02:33,878 --> 00:02:35,897
+Now you might wonder, you know,
+
+38
+00:02:35,897 --> 00:02:40,670
+how could this help if we simply assume
+the top rank documents would be random.
+
+39
+00:02:40,670 --> 00:02:47,045
+Well you can imagine these top rank
+documents are actually similar to relevant
+
+40
+00:02:47,045 --> 00:02:53,253
+documents, even if they are not relevant,
+they look like relevant documents.
+
+41
+00:02:53,253 --> 00:02:59,086
+So, it's possible to learn some related
+terms to the query from this set.
+
+42
+00:02:59,086 --> 00:03:03,545
+In fact, you may recall that we
+talked about using language model to
+
+43
+00:03:03,545 --> 00:03:08,253
+analyze word association to learn
+related words to the word computer.
+
+44
+00:03:08,253 --> 00:03:09,211
+Right?
+
+45
+00:03:09,211 --> 00:03:11,061
+And then what we did is first,
+
+46
+00:03:11,061 --> 00:03:15,295
+use computer to retrieve all
+the documents that contain computer.
+
+47
+00:03:15,295 --> 00:03:18,545
+So, imagine now the query
+here is a computer.
+
+48
+00:03:18,545 --> 00:03:19,087
+Right?
+
+49
+00:03:19,087 --> 00:03:23,712
+And then the results will be those
+documents that contain computer.
+
+50
+00:03:23,712 --> 00:03:28,836
+And what we can do then is
+to take the top end results.
+
+51
+00:03:28,836 --> 00:03:33,661
+They can match computer very well and
+we're going to count
+
+52
+00:03:33,661 --> 00:03:38,850
+the terms in this set and then we're
+going to then use the background
+
+53
+00:03:38,850 --> 00:03:44,131
+language model to choose the terms
+that are frequent the in this set,
+
+54
+00:03:44,131 --> 00:03:47,711
+but not frequent the in
+the whole collection.
+
+55
+00:03:47,711 --> 00:03:52,774
+So, if we make a contrast between
+these two, what we can find is that
+
+56
+00:03:52,774 --> 00:03:58,586
+we'll learn some related terms too, the
+work computer as what I've seen before.
+
+57
+00:03:58,586 --> 00:04:04,753
+And these related words can then be added
+to the original query to expand the query.
+
+58
+00:04:04,753 --> 00:04:08,843
+And this would help us free documents
+that don't necessarily match computer,
+
+59
+00:04:08,843 --> 00:04:11,420
+but match other words like program and
+software.
+
+60
+00:04:11,420 --> 00:04:18,378
+So this is factored for
+improving the search doubt.
+
+61
+00:04:18,378 --> 00:04:21,754
+But of course, pseudo relevancy
+feedback is completely unreliable.
+
+62
+00:04:21,754 --> 00:04:23,961
+We have to arbitrarily set a cutoff.
+
+63
+00:04:23,961 --> 00:04:26,795
+So there is also something in
+between called Implicit Feedback.
+
+64
+00:04:26,795 --> 00:04:30,263
+In this case, what we do,
+we do involve users, but
+
+65
+00:04:30,263 --> 00:04:33,503
+we don't have to ask
+users to make judgements.
+
+66
+00:04:33,503 --> 00:04:38,503
+Instead, we are going to observe how the
+user interacts with the search results.
+
+67
+00:04:38,503 --> 00:04:41,503
+So, in this case,
+we're going to look at the clickthroughs.
+
+68
+00:04:41,503 --> 00:04:45,600
+So the user clicked on this one and
+the, the user viewed this one.
+
+69
+00:04:45,600 --> 00:04:50,170
+And the user skipped this one and
+the user viewed this one again.
+
+70
+00:04:50,170 --> 00:04:56,099
+Now this also is a clue about whether
+a document is useful to the user and
+
+71
+00:04:56,099 --> 00:05:03,253
+we can even assume that we're going to use
+only the snippet here in this document.
+
+72
+00:05:03,253 --> 00:05:06,815
+The text that's actually seen by the user,
+
+73
+00:05:06,815 --> 00:05:11,835
+instead of the actual document
+of this entry in the link.
+
+74
+00:05:11,835 --> 00:05:15,211
+There that same web search may be broken,
+but that, it doesn't matter.
+
+75
+00:05:15,211 --> 00:05:20,459
+If the user tries to fetch this document
+that because of the displayed text,
+
+76
+00:05:20,459 --> 00:05:26,282
+we can assume this displayed text is
+probably relevant is interesting to user,
+
+77
+00:05:26,282 --> 00:05:29,003
+so we can learn from such information.
+
+78
+00:05:29,003 --> 00:05:32,626
+And this is called Implicit Feedback and
+we can again,
+
+79
+00:05:32,626 --> 00:05:35,170
+use the information to update the query.
+
+80
+00:05:35,170 --> 00:05:39,545
+This is a very important technique
+used in modern search engines.
+
+81
+00:05:39,545 --> 00:05:45,086
+You know, think about Google and Bing and
+they can collect a lot of user activities.
+
+82
+00:05:45,086 --> 00:05:46,770
+Why they are serverless?
+
+83
+00:05:46,770 --> 00:05:49,081
+Right.
+So they would observe what documents we
+
+84
+00:05:49,081 --> 00:05:51,128
+click on, what documents we skip.
+
+85
+00:05:51,128 --> 00:05:54,750
+And this information is very valuable and
+
+86
+00:05:54,750 --> 00:05:58,795
+they can use this to
+encode the search engine.
+
+87
+00:05:58,795 --> 00:05:59,868
+So to summarize,
+
+88
+00:05:59,868 --> 00:06:04,378
+we would talk about the three kinds of
+feedback here rather than feedback.
+
+89
+00:06:04,378 --> 00:06:08,206
+Where the use exquisite judgement,
+it takes some used effort, but
+
+90
+00:06:08,206 --> 00:06:10,840
+the judgement that
+information is reliable.
+
+91
+00:06:10,840 --> 00:06:16,420
+We talked about the Pseudo Feedback, where
+we simply assumed top random documents.
+
+92
+00:06:16,420 --> 00:06:18,628
+We get random,
+we don't have to involve the user.
+
+93
+00:06:18,628 --> 00:06:22,247
+Therefore, we could do
+that actually before we,
+
+94
+00:06:22,247 --> 00:06:24,753
+we return the results to the user.
+
+95
+00:06:24,753 --> 00:06:29,586
+And the third is Implicit Feedback,
+where we use clickthroughs.
+
+96
+00:06:29,586 --> 00:06:32,054
+Where we don't, we involve users, but
+
+97
+00:06:32,054 --> 00:06:36,420
+the user doesn't have to make
+explicit effort to make judgement.
+
+98
+00:06:36,420 --> 00:06:46,420
+[MUSIC]
+

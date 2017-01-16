@@ -1,0 +1,357 @@
+1
+00:00:00,000 --> 00:00:06,657
+[SOUND] This lecture is about
+
+2
+00:00:06,657 --> 00:00:10,606
+learning to rank.
+
+3
+00:00:10,606 --> 00:00:14,731
+In this lecture, we're going to
+continue talking about web search.
+
+4
+00:00:14,731 --> 00:00:19,478
+In particular, we're going to talk about
+using machine running to combine definite
+
+5
+00:00:19,478 --> 00:00:21,799
+features to improve ranking function.
+
+6
+00:00:21,799 --> 00:00:26,622
+So the question that we
+address in this lecture is
+
+7
+00:00:26,622 --> 00:00:30,909
+how we can combine many
+features to generate a,
+
+8
+00:00:30,909 --> 00:00:35,963
+a single ranking function
+to optimize search results.
+
+9
+00:00:35,963 --> 00:00:39,525
+In the previous lectures,
+we have talked about the,
+
+10
+00:00:39,525 --> 00:00:41,907
+a number of ways to rank documents.
+
+11
+00:00:41,907 --> 00:00:47,142
+We have talked about some retrieval
+models, like a BM25 or clear light code.
+
+12
+00:00:47,142 --> 00:00:54,502
+They can generate a content based scores
+for matching documents with a query.
+
+13
+00:00:54,502 --> 00:00:58,029
+And we also talked about
+the link-based approaches,
+
+14
+00:00:58,029 --> 00:01:03,176
+like page rank that can give additional
+scores to help us improve ranking.
+
+15
+00:01:03,176 --> 00:01:07,029
+Now the question now is how can
+we combine all these features and
+
+16
+00:01:07,029 --> 00:01:10,024
+potentially many other
+features to do ranking?
+
+17
+00:01:10,024 --> 00:01:14,889
+And this will be very useful for
+ranking web pages not only just to improve
+
+18
+00:01:14,889 --> 00:01:19,777
+accuracy, but also to improve
+the robustness of the ranking function.
+
+19
+00:01:19,777 --> 00:01:24,646
+So that's it not easy for
+a spammer to just perturb a one or
+
+20
+00:01:24,646 --> 00:01:27,278
+a few features to promote a page.
+
+21
+00:01:27,278 --> 00:01:32,108
+So the general idea of learning to
+rank is to use machine learning to
+
+22
+00:01:32,108 --> 00:01:36,938
+combine these features to optimize
+the weight on different features to
+
+23
+00:01:36,938 --> 00:01:39,768
+generate the optimal ranking function.
+
+24
+00:01:39,768 --> 00:01:44,996
+So we would assume that
+the given a query document pair,
+
+25
+00:01:44,996 --> 00:01:49,125
+Q and D,
+we can define a number of features.
+
+26
+00:01:49,125 --> 00:01:54,905
+And these features can vary from
+content based features such as
+
+27
+00:01:54,905 --> 00:01:59,735
+a score of the document it
+was respected to the query
+
+28
+00:01:59,735 --> 00:02:04,378
+according to a retrieval function,
+such as BM25 or
+
+29
+00:02:04,378 --> 00:02:10,011
+Query Light or pivot commands
+from a machine or PL2, et cetera.
+
+30
+00:02:10,011 --> 00:02:15,111
+It can also be linked based
+score like PageRank score.
+
+31
+00:02:15,111 --> 00:02:22,805
+It can be also application of retrieval
+models to the anchor text of the page.
+
+32
+00:02:22,805 --> 00:02:23,526
+Right?
+
+33
+00:02:23,526 --> 00:02:29,330
+Those are the types of descriptions
+of links that pointed to this page.
+
+34
+00:02:29,330 --> 00:02:33,905
+So these can all be clues about whether
+this document is relevant or not.
+
+35
+00:02:33,905 --> 00:02:41,101
+We can even include a, a feature such
+as whether the URL has a [INAUDIBLE],
+
+36
+00:02:41,101 --> 00:02:47,441
+because this might be the indicator
+of home page or entry page.
+
+37
+00:02:47,441 --> 00:02:51,178
+So, all of these features can then be
+combined together to generate the ranking
+
+38
+00:02:51,178 --> 00:02:51,807
+functions.
+
+39
+00:02:51,807 --> 00:02:54,954
+The question is of course,
+how can we combine them?
+
+40
+00:02:54,954 --> 00:03:00,610
+In this approach,
+we simply hypothesize that the probability
+
+41
+00:03:00,610 --> 00:03:07,573
+that this document is random to this query
+is a function of all these features.
+
+42
+00:03:07,573 --> 00:03:12,384
+So we can hypothesize this
+that the probability of
+
+43
+00:03:12,384 --> 00:03:17,719
+relevance is related to these
+features through a particular
+
+44
+00:03:17,719 --> 00:03:21,917
+form of the function
+that has some parameters.
+
+45
+00:03:21,917 --> 00:03:26,036
+These parameters can
+control the influence of
+
+46
+00:03:26,036 --> 00:03:30,435
+different features on the final relevance.
+
+47
+00:03:30,435 --> 00:03:33,573
+This is of course, just a assumption.
+
+48
+00:03:33,573 --> 00:03:38,798
+Whether this assumption really makes
+sense is still a, a big question.
+
+49
+00:03:38,798 --> 00:03:44,092
+However, you have to empirically
+evaluate the, the, the function.
+
+50
+00:03:44,092 --> 00:03:49,099
+But by hypothesizing that the relevance
+is related to those features
+
+51
+00:03:49,099 --> 00:03:54,106
+in the particular way, we can then
+combine these futures to generate
+
+52
+00:03:54,106 --> 00:04:00,600
+the potentially more powerful ranking
+function, a more robust ranking function.
+
+53
+00:04:00,600 --> 00:04:04,687
+Naturally, the next question is how
+do we estimate loose parameters?
+
+54
+00:04:04,687 --> 00:04:08,733
+You know, how do we know which
+features should have high weight and
+
+55
+00:04:08,733 --> 00:04:11,198
+which features should have low weight?
+
+56
+00:04:11,198 --> 00:04:14,543
+So this is a task of training or learning.
+
+57
+00:04:14,543 --> 00:04:15,303
+All right.
+So,
+
+58
+00:04:15,303 --> 00:04:19,058
+in this approach what we will
+do is use some training data.
+
+59
+00:04:19,058 --> 00:04:24,586
+Those are the data that
+have been judged by users.
+
+60
+00:04:24,586 --> 00:04:27,139
+So that we already know
+the relevance judgments.
+
+61
+00:04:27,139 --> 00:04:32,478
+We already know which documents should
+be rather high for which queries and
+
+62
+00:04:32,478 --> 00:04:37,053
+this information can be based on
+real judgments by users or can,
+
+63
+00:04:37,053 --> 00:04:42,581
+this can also be approximated by just
+using click through information.
+
+64
+00:04:42,581 --> 00:04:48,368
+Where we can assume the clicked documents
+are better than the skipped documents or
+
+65
+00:04:48,368 --> 00:04:53,272
+clicked documents are relevant and
+the skipped documents are not relevant.
+
+66
+00:04:53,272 --> 00:05:00,022
+So, in general, the fit such hypothesize
+ranging function to the training day,
+
+67
+00:05:00,022 --> 00:05:06,414
+meaning that we will try to optimize its
+retrieval accuracy on the training data.
+
+68
+00:05:06,414 --> 00:05:12,804
+And we adjust these parameters to see
+how we can optimize the performance
+
+69
+00:05:12,804 --> 00:05:19,800
+of the function on the training data in
+terms of some measure such as map or NDCG.
+
+70
+00:05:19,800 --> 00:05:25,187
+So the training data would
+look like a table of tuples.
+
+71
+00:05:25,187 --> 00:05:32,605
+H-tuple it has three elements, the query,
+the document and the judgment.
+
+72
+00:05:32,605 --> 00:05:37,566
+So, it looks very much like
+our relevance judgment that we
+
+73
+00:05:37,566 --> 00:05:41,323
+talked about in evaluation
+of retrieval systems.
+
+74
+00:05:41,323 --> 00:05:51,323
+[MUSIC]
+

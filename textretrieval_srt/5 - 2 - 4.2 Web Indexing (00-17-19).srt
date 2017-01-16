@@ -1,0 +1,1065 @@
+1
+00:00:00,172 --> 00:00:07,487
+[SOUND].
+
+2
+00:00:07,487 --> 00:00:11,980
+This lecture is about web indexing.
+
+3
+00:00:11,980 --> 00:00:18,707
+In this lecture, we will continue
+talking about web search, and
+
+4
+00:00:18,707 --> 00:00:24,469
+we're going to talk about how
+to create a web scale index.
+
+5
+00:00:24,469 --> 00:00:29,484
+So once we crawl the web
+we've got a lot of web pages.
+
+6
+00:00:29,484 --> 00:00:33,489
+The next step is we use the indexer
+to create the inverted index.
+
+7
+00:00:36,540 --> 00:00:41,150
+In general, we can use the standard
+information retrieval techniques for
+
+8
+00:00:41,150 --> 00:00:45,900
+creating the index, and that is what we
+talked about in the previous lecture.
+
+9
+00:00:45,900 --> 00:00:50,763
+But there are new challenges that we
+have to solve for web scale indexing,
+
+10
+00:00:50,763 --> 00:00:54,772
+and the two main challenges of
+scalability and efficiency.
+
+11
+00:00:54,772 --> 00:01:00,874
+The index will be so large that it cannot
+actually fit into any single machine or
+
+12
+00:01:00,874 --> 00:01:05,879
+single disk, so we have to store
+the data on multiple machines.
+
+13
+00:01:06,910 --> 00:01:11,808
+Also, because the data is so large,
+it's beneficial to process the data in
+
+14
+00:01:11,808 --> 00:01:15,111
+parallel so
+that we can produce the index quickly.
+
+15
+00:01:15,111 --> 00:01:20,410
+To address these challenges,
+Google has made a number of innovations.
+
+16
+00:01:20,410 --> 00:01:25,522
+One is the Google File System,
+that's a general distributed file system
+
+17
+00:01:25,522 --> 00:01:30,890
+that can help programmers manage files
+stored on a cluster of machines.
+
+18
+00:01:32,000 --> 00:01:33,148
+The second is MapReduce.
+
+19
+00:01:33,148 --> 00:01:37,140
+This is a general software framework for
+supporting parallel computation.
+
+20
+00:01:38,960 --> 00:01:44,830
+Hadoop is the most well known open
+source implementation of MapReduce,
+
+21
+00:01:44,830 --> 00:01:47,800
+now used in many applications.
+
+22
+00:01:50,000 --> 00:01:52,480
+So this is the architecture
+of the Google File System.
+
+23
+00:01:53,790 --> 00:01:58,768
+It uses a very simple centralized
+management mechanism to manage
+
+24
+00:01:58,768 --> 00:02:01,670
+all the specific locations of files.
+
+25
+00:02:01,670 --> 00:02:04,778
+So it maintains the file namespace and
+
+26
+00:02:04,778 --> 00:02:09,740
+look up table to know where
+exactly each file is stored.
+
+27
+00:02:11,374 --> 00:02:15,801
+The application client would
+then talk to this GFS master.
+
+28
+00:02:15,801 --> 00:02:21,420
+And that obtains specific locations of
+the files that they want to process.
+
+29
+00:02:22,890 --> 00:02:31,450
+And once the GFS client obtained
+the specific information about the files,
+
+30
+00:02:31,450 --> 00:02:35,848
+then the application client
+can talk to the specific
+
+31
+00:02:35,848 --> 00:02:40,250
+servers where the data
+actually sits directly.
+
+32
+00:02:40,250 --> 00:02:46,020
+So that you can avoid avoid involving
+other nodes in the network.
+
+33
+00:02:46,020 --> 00:02:49,730
+So when this file system
+stores the files on machines
+
+34
+00:02:51,590 --> 00:02:57,530
+the system also would create
+a fixed sizes of chunks.
+
+35
+00:02:57,530 --> 00:03:01,460
+So the data files are separate
+into many chunks,
+
+36
+00:03:01,460 --> 00:03:05,100
+each chunk is 64 megabytes,
+so it's pretty big.
+
+37
+00:03:05,100 --> 00:03:09,090
+And that's appropriate for
+large data processing.
+
+38
+00:03:09,090 --> 00:03:12,520
+These chunks are replicated
+to ensure reliability.
+
+39
+00:03:12,520 --> 00:03:17,210
+So this is something that the, the
+programmer doesn't have to worry about,
+
+40
+00:03:17,210 --> 00:03:22,210
+and it's all taken care
+of by this file system.
+
+41
+00:03:22,210 --> 00:03:24,110
+So from the application perspective,
+
+42
+00:03:24,110 --> 00:03:29,020
+the programmer would see this
+as if it's a normal file.
+
+43
+00:03:29,020 --> 00:03:33,712
+The program doesn't have to know
+where exactly it's stored, and
+
+44
+00:03:33,712 --> 00:03:38,841
+can just invoke high level
+operators to process the file.
+
+45
+00:03:38,841 --> 00:03:43,436
+And another feature is that the data
+transfer is directly between
+
+46
+00:03:43,436 --> 00:03:48,797
+application and chunk servers, so
+it's, it's efficient in this sense.
+
+47
+00:03:51,003 --> 00:03:55,450
+On top of the Google file system, and
+Google also proposed MapReduce as
+
+48
+00:03:55,450 --> 00:03:59,210
+a general framework for
+parallel programming.
+
+49
+00:03:59,210 --> 00:04:05,668
+Now, this is very useful to support
+a task like building inverted index.
+
+50
+00:04:05,668 --> 00:04:10,852
+And so this framework is hiding a lot of
+
+51
+00:04:10,852 --> 00:04:15,896
+low level features from the programmer.
+
+52
+00:04:15,896 --> 00:04:21,285
+As a result, the programmer can
+make minimum effort to create
+
+53
+00:04:21,285 --> 00:04:26,580
+a application that can be run
+on a large cluster in parallel.
+
+54
+00:04:28,990 --> 00:04:33,120
+So, some of the low level
+details hidden in the framework,
+
+55
+00:04:33,120 --> 00:04:39,520
+including the specific natural
+communications, or load balancing,
+
+56
+00:04:39,520 --> 00:04:46,630
+or where the tasks are executed, all these
+details are hidden from the programmer.
+
+57
+00:04:47,880 --> 00:04:52,250
+There is also a nice feature which
+is the built-in fault tolerance.
+
+58
+00:04:52,250 --> 00:04:56,902
+If one server is broken,
+let's say, so it's down, and
+
+59
+00:04:56,902 --> 00:04:59,675
+then some tasks may not be finished,
+
+60
+00:04:59,675 --> 00:05:05,300
+then the MapReduce mechanism would
+know that the task has not been done.
+
+61
+00:05:05,300 --> 00:05:11,600
+So it would automatically dispatch the
+task on other servers that can do the job.
+
+62
+00:05:11,600 --> 00:05:15,130
+And therefore, again, the programmer
+doesn't have to worry about that.
+
+63
+00:05:15,130 --> 00:05:17,570
+So here's how MapReduce works.
+
+64
+00:05:17,570 --> 00:05:23,203
+The input data will be separated
+into a number of key, value pairs.
+
+65
+00:05:23,203 --> 00:05:26,300
+Now, what exactly is in the value
+will depend on the data.
+
+66
+00:05:26,300 --> 00:05:29,960
+And it's actually a fairly
+general framework to allow you to
+
+67
+00:05:29,960 --> 00:05:33,000
+just partition the data
+into different parts.
+
+68
+00:05:33,000 --> 00:05:35,460
+And each part can be then
+processed in parallel.
+
+69
+00:05:37,100 --> 00:05:41,161
+Each key, value pair will be
+then sent to a map function.
+
+70
+00:05:41,161 --> 00:05:45,680
+The programmer will write
+the map function, of course.
+
+71
+00:05:45,680 --> 00:05:50,630
+And then the map function will then
+process this key value pair and
+
+72
+00:05:50,630 --> 00:05:53,870
+generate the,
+a number of other key value pairs.
+
+73
+00:05:53,870 --> 00:05:58,370
+Of course, the new key is usually
+different from the old key
+
+74
+00:05:58,370 --> 00:06:02,080
+that's given to the map as input.
+
+75
+00:06:02,080 --> 00:06:05,770
+And these key value pairs
+are the output of the map function.
+
+76
+00:06:05,770 --> 00:06:10,863
+And all the outputs of all the map
+functions will be then collected.
+
+77
+00:06:10,863 --> 00:06:16,029
+And then they will be further
+sorted based on the key.
+
+78
+00:06:16,029 --> 00:06:21,025
+And the result is that all the values
+that are associated with the same
+
+79
+00:06:21,025 --> 00:06:24,260
+key will be then grouped together.
+
+80
+00:06:24,260 --> 00:06:30,520
+So now we've got a pair of a key and a set
+of values that are attached to this key.
+
+81
+00:06:31,630 --> 00:06:34,960
+So this will then be sent
+to a reduce function.
+
+82
+00:06:36,330 --> 00:06:41,338
+Now, of course, each reduce function will
+handle a different each a different key.
+
+83
+00:06:41,338 --> 00:06:45,950
+So we will send this,
+these output values to
+
+84
+00:06:45,950 --> 00:06:50,580
+multiple reduce functions,
+each handling a unique key.
+
+85
+00:06:52,220 --> 00:06:58,510
+A reduce function would then process
+the input, which is a key and
+
+86
+00:06:58,510 --> 00:07:04,920
+a set of values, to produce another
+set of key values as the output.
+
+87
+00:07:04,920 --> 00:07:10,080
+So these output values would be then
+collected together to form the,
+
+88
+00:07:10,080 --> 00:07:11,230
+the final output.
+
+89
+00:07:12,390 --> 00:07:17,210
+Right, so this is the,
+the general framework of MapReduce.
+
+90
+00:07:17,210 --> 00:07:21,580
+Now, the programmer only needs to
+write the the map function and
+
+91
+00:07:21,580 --> 00:07:23,290
+the reduce function.
+
+92
+00:07:23,290 --> 00:07:28,090
+Everything else is actually taken
+care of by the MapReduce framework.
+
+93
+00:07:28,090 --> 00:07:32,920
+So, you can see the programmer really
+only needs to do minimum work.
+
+94
+00:07:32,920 --> 00:07:38,409
+And with such a framework, the input data
+can be partitioned into multiple parts.
+
+95
+00:07:38,409 --> 00:07:43,207
+Each is processed in
+parallel first by map, and
+
+96
+00:07:43,207 --> 00:07:48,441
+then in the process after
+we reach the reduce stage,
+
+97
+00:07:48,441 --> 00:07:53,677
+then much more reduce functions
+can also further process
+
+98
+00:07:53,677 --> 00:08:00,390
+the different keys and
+their associated values in parallel.
+
+99
+00:08:00,390 --> 00:08:05,730
+So it achieves some it
+
+100
+00:08:05,730 --> 00:08:10,560
+achieves the purpose of parallel
+processing of a large dataset.
+
+101
+00:08:10,560 --> 00:08:15,040
+So let's take a look at a simple example,
+and that's word counting.
+
+102
+00:08:16,690 --> 00:08:21,570
+The input is is files containing words.
+
+103
+00:08:21,570 --> 00:08:25,928
+And the output that we want to generate is
+the number of occurrences of each word, so
+
+104
+00:08:25,928 --> 00:08:27,124
+it's the word count.
+
+105
+00:08:27,124 --> 00:08:31,582
+Right, we know this,
+this kind of counting would be useful to,
+
+106
+00:08:31,582 --> 00:08:36,388
+for example, assess the popularity
+of a word in a large collection.
+
+107
+00:08:36,388 --> 00:08:42,870
+And this is useful for achieving
+a factor of IDF weighting for search.
+
+108
+00:08:42,870 --> 00:08:44,077
+So how can we solve this problem?
+
+109
+00:08:44,077 --> 00:08:48,457
+Well, one natural thought is that,
+well, this task can be done in
+
+110
+00:08:48,457 --> 00:08:53,156
+parallel by simply counting different
+parts of the file in parallel and
+
+111
+00:08:53,156 --> 00:08:57,000
+then in the end,
+we just combine all the counts.
+
+112
+00:08:57,000 --> 00:09:01,775
+And that's precisely the idea of
+what we can do with MapReduce.
+
+113
+00:09:02,910 --> 00:09:06,420
+We can parallelize lines
+in this input file.
+
+114
+00:09:07,670 --> 00:09:12,830
+So more specifically, we can assume
+the input to each map function
+
+115
+00:09:12,830 --> 00:09:20,450
+is a key value pair that represents the
+line number and the stream on that line.
+
+116
+00:09:20,450 --> 00:09:25,490
+So the first line, for
+example, has a key of one.
+
+117
+00:09:25,490 --> 00:09:32,240
+And the value is Hello World Bye World,
+and just four words on that line.
+
+118
+00:09:32,240 --> 00:09:36,240
+So this key-value pair will
+be sent to a map function.
+
+119
+00:09:36,240 --> 00:09:40,670
+The map function would then just
+count the words in this line.
+
+120
+00:09:41,700 --> 00:09:43,880
+And in this case, of course,
+there are only four words.
+
+121
+00:09:43,880 --> 00:09:45,709
+Each word gets a count of one.
+
+122
+00:09:45,709 --> 00:09:52,770
+And these are the output that you see here
+on this slide, from this map function.
+
+123
+00:09:52,770 --> 00:09:55,460
+So, the map function
+is really very simple.
+
+124
+00:09:55,460 --> 00:10:00,850
+If you look at the, what the pseudocode
+looks like on the right side, you see,
+
+125
+00:10:00,850 --> 00:10:04,890
+it simply needs to iterate over
+all the words in this line,
+
+126
+00:10:04,890 --> 00:10:08,330
+and then just call a Collect function,
+
+127
+00:10:09,340 --> 00:10:14,080
+which means it would then send the word
+and the counter to the collector.
+
+128
+00:10:14,080 --> 00:10:19,280
+The collector would then try to
+sort all these key value pairs
+
+129
+00:10:19,280 --> 00:10:20,770
+from different map functions.
+
+130
+00:10:20,770 --> 00:10:21,360
+Right?
+
+131
+00:10:21,360 --> 00:10:22,940
+So the functions are very simple.
+
+132
+00:10:22,940 --> 00:10:30,300
+And the programmer specifies this function
+as a way to process each part of the data.
+
+133
+00:10:31,620 --> 00:10:34,822
+Of course, the second line will be
+handled by a different map function,
+
+134
+00:10:34,822 --> 00:10:36,990
+which will produce a similar output.
+
+135
+00:10:36,990 --> 00:10:40,890
+Okay, now the output from the map
+functions will be then sent to
+
+136
+00:10:40,890 --> 00:10:41,780
+a collector.
+
+137
+00:10:41,780 --> 00:10:45,550
+And the collector will do
+the internal grouping or sorting.
+
+138
+00:10:45,550 --> 00:10:50,150
+So at this stage, you can see we
+have collected multiple pairs.
+
+139
+00:10:50,150 --> 00:10:53,850
+Each pair is a word and
+its count in the line.
+
+140
+00:10:53,850 --> 00:10:58,960
+So once we see all these these pairs,
+
+141
+00:10:58,960 --> 00:11:03,570
+then we can sort them based on the key,
+which is the word.
+
+142
+00:11:03,570 --> 00:11:08,590
+So we will collect all the counts of
+a word, like bye, here, together.
+
+143
+00:11:09,610 --> 00:11:12,120
+And similarly, we do that for other words.
+
+144
+00:11:12,120 --> 00:11:13,615
+Like Hadoop, hello, etc.
+
+145
+00:11:13,615 --> 00:11:19,090
+So each word now is attached to
+a number of values, a number of counts.
+
+146
+00:11:20,710 --> 00:11:27,860
+And these counts represent the occurrences
+of this word in different lines.
+
+147
+00:11:27,860 --> 00:11:33,080
+So now we have got a new pair of a key and
+a set of values,
+
+148
+00:11:33,080 --> 00:11:37,360
+and this pair will then be
+fed into a reduce function.
+
+149
+00:11:37,360 --> 00:11:42,020
+So the reduce function now will
+have to finish the job of counting
+
+150
+00:11:42,020 --> 00:11:44,450
+the total occurrences of this word.
+
+151
+00:11:44,450 --> 00:11:47,020
+Now it has already got all
+these partial counts, so
+
+152
+00:11:47,020 --> 00:11:50,370
+all it needs to do is
+simply to add them up.
+
+153
+00:11:50,370 --> 00:11:53,720
+So the reduce function shown
+here is very simple as well.
+
+154
+00:11:53,720 --> 00:11:58,565
+You have a counter and then iterate over
+all the words that you see in this array,
+
+155
+00:11:58,565 --> 00:12:01,761
+and then you just accumulate these counts,
+right.
+
+156
+00:12:03,070 --> 00:12:06,985
+And then finally, you output the key and
+and the total count,
+
+157
+00:12:06,985 --> 00:12:11,140
+and that's precisely what we want as
+the output of this whole program.
+
+158
+00:12:12,230 --> 00:12:17,313
+So, you can see, this is already very
+similar to building a inverted index,
+
+159
+00:12:17,313 --> 00:12:21,438
+and if you think about it,
+the output here is indexed by a word, and
+
+160
+00:12:21,438 --> 00:12:24,410
+we have already got a dictionary,
+basically.
+
+161
+00:12:24,410 --> 00:12:26,440
+We have got the count.
+
+162
+00:12:26,440 --> 00:12:32,270
+But what's missing is the document IDs and
+the specific
+
+163
+00:12:34,000 --> 00:12:38,240
+frequency counts of words
+in those documents.
+
+164
+00:12:38,240 --> 00:12:43,260
+So we can modify this slightly to actually
+build a inverted index in parallel.
+
+165
+00:12:43,260 --> 00:12:45,800
+So here's one way to do that.
+
+166
+00:12:45,800 --> 00:12:51,280
+So in this case, we can assume
+the input to a map function is a pair
+
+167
+00:12:51,280 --> 00:12:54,450
+of a key which denotes the document ID and
+
+168
+00:12:54,450 --> 00:12:59,550
+the value denoting the string for
+that document.
+
+169
+00:12:59,550 --> 00:13:02,420
+So it's all the words in that document.
+
+170
+00:13:02,420 --> 00:13:05,300
+And so the map function will
+do something very similar to
+
+171
+00:13:05,300 --> 00:13:07,910
+what we have seen in
+the water company example.
+
+172
+00:13:07,910 --> 00:13:14,192
+It simply groups all the counts of
+this word in this document together.
+
+173
+00:13:14,192 --> 00:13:17,990
+And it will then generate
+a set of key value pairs.
+
+174
+00:13:17,990 --> 00:13:19,360
+Each key is a word.
+
+175
+00:13:20,360 --> 00:13:27,620
+And the value is the count of this word
+in this document plus the document ID.
+
+176
+00:13:27,620 --> 00:13:31,790
+Now, you can easily see why we
+need to add document ID here.
+
+177
+00:13:31,790 --> 00:13:36,222
+Of course, later, in the inverted index,
+we would like to keep this information, so
+
+178
+00:13:36,222 --> 00:13:38,604
+the map function should keep track of it.
+
+179
+00:13:38,604 --> 00:13:41,738
+And this can then be sent to
+the reduce function later.
+
+180
+00:13:41,738 --> 00:13:46,710
+Now, similarly another document D2
+can be processed in the same way.
+
+181
+00:13:46,710 --> 00:13:50,890
+So in the end, again, there is a sorting
+mechanism that would group them together.
+
+182
+00:13:50,890 --> 00:13:55,861
+And then we will have just
+a key like java associated
+
+183
+00:13:55,861 --> 00:14:00,052
+with all the documents
+that match this key, or
+
+184
+00:14:00,052 --> 00:14:04,925
+all the documents where java occurred,
+and their counts,
+
+185
+00:14:04,925 --> 00:14:09,520
+right, so
+the counts of java in those documents.
+
+186
+00:14:09,520 --> 00:14:11,679
+And this will be collected together.
+
+187
+00:14:11,679 --> 00:14:15,850
+And this will be, so
+fed into the reduced function.
+
+188
+00:14:15,850 --> 00:14:19,230
+So, now you can see,
+the reduce function has already got input
+
+189
+00:14:19,230 --> 00:14:21,850
+that looks like a inverted index entry,
+right?
+
+190
+00:14:21,850 --> 00:14:27,280
+So, it's just the word and all
+the documents that contain the word and
+
+191
+00:14:27,280 --> 00:14:30,900
+the frequency of the word
+in those documents.
+
+192
+00:14:30,900 --> 00:14:37,680
+So, all you need to do is simply to
+concatenate them into a continuous chunk
+
+193
+00:14:37,680 --> 00:14:43,650
+of data, and this can be then
+retained into a file system.
+
+194
+00:14:43,650 --> 00:14:47,960
+So basically, the reduce function
+is going to do very minimal work.
+
+195
+00:14:49,450 --> 00:14:58,010
+And so, this is pseudo-code for
+inverted index construction.
+
+196
+00:14:58,010 --> 00:15:05,290
+Here we see two functions,
+procedure Map and procedure Reduce.
+
+197
+00:15:05,290 --> 00:15:13,440
+And a programmer would specify these two
+functions to program on top of MapReduce.
+
+198
+00:15:13,440 --> 00:15:18,950
+And you can see, basically,
+they are doing what I just described.
+
+199
+00:15:18,950 --> 00:15:20,413
+In the case of Map,
+
+200
+00:15:20,413 --> 00:15:26,180
+it's going to count the occurrences
+of a word using an associative array,
+
+201
+00:15:26,180 --> 00:15:32,050
+and will output all the counts
+together with the document ID here.
+
+202
+00:15:32,050 --> 00:15:36,206
+Right?
+So this,
+
+203
+00:15:37,250 --> 00:15:42,400
+the reduce function,
+on the other hand simply concatenates
+
+204
+00:15:42,400 --> 00:15:47,570
+all the input that it has been given and
+
+205
+00:15:47,570 --> 00:15:53,408
+then put them together as one
+single entry for this key.
+
+206
+00:15:53,408 --> 00:15:58,250
+So this is a very simple
+MapReduce function, yet
+
+207
+00:15:58,250 --> 00:16:03,430
+it would allow us to construct an inverted
+index at a very large scale, and
+
+208
+00:16:03,430 --> 00:16:07,070
+data can be processed
+by different machines.
+
+209
+00:16:07,070 --> 00:16:11,000
+The program doesn't have to
+take care of the details.
+
+210
+00:16:12,040 --> 00:16:18,930
+So this is how we can do parallel
+index construction for web search.
+
+211
+00:16:20,040 --> 00:16:24,720
+So to summarize, web scale indexing
+requires some new techniques that
+
+212
+00:16:24,720 --> 00:16:28,949
+go beyond the standard
+traditional indexing techniques.
+
+213
+00:16:28,949 --> 00:16:34,590
+Mainly, we have to store index on
+multiple machines, and this is usually
+
+214
+00:16:34,590 --> 00:16:40,240
+done by using a file system like Google
+File System, a distributed file system.
+
+215
+00:16:40,240 --> 00:16:45,222
+And secondly, it requires creating
+the index in parallel, because it's so
+
+216
+00:16:45,222 --> 00:16:49,427
+large, it takes a long time to create
+an index for all the documents.
+
+217
+00:16:49,427 --> 00:16:53,561
+So if we can do it in parallel,
+it would be much faster, and
+
+218
+00:16:53,561 --> 00:16:56,690
+this is done by using
+the MapReduce framework.
+
+219
+00:16:57,850 --> 00:17:02,059
+Note that the both the GFS and
+MapReduce frameworks are very general, so
+
+220
+00:17:02,059 --> 00:17:04,898
+they can also support
+many other applications.
+
+221
+00:17:07,697 --> 00:17:17,697
+[MUSIC]
+

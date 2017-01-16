@@ -1,0 +1,633 @@
+1
+00:00:00,006 --> 00:00:03,503
+[SOUND]
+
+2
+00:00:12,503 --> 00:00:16,409
+So, I showed you how we rewrite the into
+
+3
+00:00:16,409 --> 00:00:21,640
+a form that looks like a,
+the formula on this slide.
+
+4
+00:00:21,640 --> 00:00:26,390
+After we make the assumption about
+smoothing the language model
+
+5
+00:00:27,540 --> 00:00:30,476
+based on the collection
+of the language model.
+
+6
+00:00:30,476 --> 00:00:36,160
+Now, if we look at the, this rewriting,
+it actually would give us two benefits.
+
+7
+00:00:36,160 --> 00:00:42,470
+The first benefit is, it helps us better
+understand that this ranking function.
+
+8
+00:00:42,470 --> 00:00:47,550
+In particular, we're going to show that
+from this formula we can see smoothing is
+
+9
+00:00:47,550 --> 00:00:51,470
+the correction that we model will give
+us something like a TF-IDF weighting and
+
+10
+00:00:51,470 --> 00:00:52,220
+length normalization.
+
+11
+00:00:52,220 --> 00:00:57,580
+The second benefit is
+that it also allows us to
+
+12
+00:00:57,580 --> 00:01:01,100
+compute the query likelihood
+more efficiently.
+
+13
+00:01:02,940 --> 00:01:03,590
+In particular,
+
+14
+00:01:03,590 --> 00:01:07,870
+we see that the main part of the formula
+is a sum over the matching query terms.
+
+15
+00:01:09,610 --> 00:01:14,910
+So, this is much better than if we
+take the sum over all the words.
+
+16
+00:01:14,910 --> 00:01:16,920
+After we smooth the document
+the language model,
+
+17
+00:01:16,920 --> 00:01:21,400
+we essentially have nonzero
+probabilities for all the words.
+
+18
+00:01:21,400 --> 00:01:25,760
+So, this new form of the formula is
+much easier to score, or to compute.
+
+19
+00:01:27,580 --> 00:01:31,590
+It's also interesting to note
+that the last of term here
+
+20
+00:01:31,590 --> 00:01:34,420
+is actually independent of the document.
+
+21
+00:01:34,420 --> 00:01:36,630
+Since our goal is to
+rank the documents for
+
+22
+00:01:36,630 --> 00:01:40,610
+the same query,
+we can ignore this term for ranking.
+
+23
+00:01:40,610 --> 00:01:43,640
+Because it's going to be the same for
+all the documents.
+
+24
+00:01:43,640 --> 00:01:46,680
+Ignoring it wouldn't effect
+the order of the documents.
+
+25
+00:01:49,070 --> 00:01:54,780
+Inside the sum,
+we also see that each matched
+
+26
+00:01:54,780 --> 00:01:59,760
+query term would contribute a weight.
+
+27
+00:01:59,760 --> 00:02:01,980
+And this weight actually,
+
+28
+00:02:01,980 --> 00:02:07,070
+is very interesting because it
+looks like TF-IDF weighting.
+
+29
+00:02:07,070 --> 00:02:11,790
+First, we can already see it has
+a frequency of the word in the query,
+
+30
+00:02:11,790 --> 00:02:14,250
+just like in the vector space model.
+
+31
+00:02:14,250 --> 00:02:16,240
+When we take adult product,
+
+32
+00:02:16,240 --> 00:02:20,970
+we see the word frequency in
+the query to show up in such a sum.
+
+33
+00:02:22,250 --> 00:02:25,670
+And so naturally,
+this part will correspond to
+
+34
+00:02:25,670 --> 00:02:30,340
+the vector element from
+the document vector.
+
+35
+00:02:30,340 --> 00:02:34,170
+And here, indeed, we can see it actually
+
+36
+00:02:35,420 --> 00:02:39,972
+encodes a weight that has similar
+factor to TF-IDF weighting.
+
+37
+00:02:41,350 --> 00:02:43,130
+I let you examine it.
+
+38
+00:02:43,130 --> 00:02:43,670
+Can you see it?
+
+39
+00:02:43,670 --> 00:02:49,490
+Can you see which part is capturing TF,
+and which part is capturing IDF weighting?
+
+40
+00:02:49,490 --> 00:02:54,630
+So if you want, you can pause
+the video to think more about it.
+
+41
+00:02:55,830 --> 00:03:02,640
+So, have you noticed that this p sub-seen
+is related to the term frequency
+
+42
+00:03:02,640 --> 00:03:08,240
+in the sense that if a word occurs
+very frequently in the document,
+
+43
+00:03:08,240 --> 00:03:10,970
+then the S probability here
+will tend to be larger.
+
+44
+00:03:10,970 --> 00:03:11,980
+Right?
+
+45
+00:03:11,980 --> 00:03:16,660
+So, this means this term is really
+doing something like TF weighting.
+
+46
+00:03:18,130 --> 00:03:22,080
+Have you also noticed that
+this time in the denominator
+
+47
+00:03:23,310 --> 00:03:26,090
+is actually achieving the factor of IDF?
+
+48
+00:03:26,090 --> 00:03:29,240
+Why?
+Because this is the popularity of the term
+
+49
+00:03:29,240 --> 00:03:33,300
+in the collection, but
+it's in the denominator.
+
+50
+00:03:33,300 --> 00:03:37,110
+So, if the probability in
+the collection is larger
+
+51
+00:03:37,110 --> 00:03:39,700
+than the weight is actually smaller.
+
+52
+00:03:39,700 --> 00:03:41,790
+And, this means a popular term.
+
+53
+00:03:41,790 --> 00:03:43,290
+We actually have a smaller weight.
+
+54
+00:03:43,290 --> 00:03:45,990
+And, this is precisely what
+IDF weighting is doing.
+
+55
+00:03:47,040 --> 00:03:50,370
+Only not, we now have
+a different form of TF and IDF.
+
+56
+00:03:51,550 --> 00:03:56,050
+Remember, IDF has a log,
+logarithm of document frequency, but
+
+57
+00:03:56,050 --> 00:03:58,280
+here we have something different.
+
+58
+00:03:58,280 --> 00:04:02,460
+But intuitively,
+it achieves a similar effect.
+
+59
+00:04:02,460 --> 00:04:05,730
+Interestingly, we also have something
+related to the length normalization.
+
+60
+00:04:05,730 --> 00:04:14,421
+Again, can you see which factor is
+related to the length in this formula.
+
+61
+00:04:14,421 --> 00:04:18,350
+Well, I just say that, that this
+term is related to IDF weighting.
+
+62
+00:04:19,510 --> 00:04:23,570
+This, this collection probability.
+
+63
+00:04:23,570 --> 00:04:26,290
+But, it turns out this term here
+
+64
+00:04:26,290 --> 00:04:28,548
+is actually related to
+a document length normalization.
+
+65
+00:04:28,548 --> 00:04:35,100
+In particular,
+D might be related to document N, length.
+
+66
+00:04:35,100 --> 00:04:40,480
+So, it, it encodes how much probability
+mass we want to give to unseen words.
+
+67
+00:04:41,880 --> 00:04:43,690
+How much smoothing you are allowed to do.
+
+68
+00:04:43,690 --> 00:04:48,680
+Intuitively, if a document is long,
+then we need to do less smoothing.
+
+69
+00:04:48,680 --> 00:04:50,970
+Because we can assume that
+it is large enough that,
+
+70
+00:04:50,970 --> 00:04:55,720
+we have probably observed all of the words
+that the author could have written.
+
+71
+00:04:55,720 --> 00:05:00,260
+But if the document is short,
+the unseen are expected to be to be large,
+
+72
+00:05:00,260 --> 00:05:02,330
+and we need to do more smoothing.
+
+73
+00:05:02,330 --> 00:05:06,218
+It's like that there are words that have
+not been retained yet by the author.
+
+74
+00:05:06,218 --> 00:05:12,049
+So, this term appears to
+paralyze long documents
+
+75
+00:05:12,049 --> 00:05:18,125
+tend to be longer than,
+larger than for long document.
+
+76
+00:05:18,125 --> 00:05:21,830
+But note that the also occurs here.
+
+77
+00:05:22,940 --> 00:05:26,950
+And so,
+this may not actually be necessary,
+
+78
+00:05:26,950 --> 00:05:30,600
+penalizing long documents, and
+in fact is not so clear here.
+
+79
+00:05:31,930 --> 00:05:36,560
+But as we will see later, when we
+consider some specific smoothing methods,
+
+80
+00:05:36,560 --> 00:05:40,070
+it turns out that they do
+penalize long documents.
+
+81
+00:05:40,070 --> 00:05:42,500
+Just like in TF-IDF weighting and
+
+82
+00:05:42,500 --> 00:05:45,890
+the document ends formulas
+in the vector space model.
+
+83
+00:05:47,490 --> 00:05:50,670
+So, that's a very interesting
+observation because it means
+
+84
+00:05:50,670 --> 00:05:54,870
+we don't even have to think about
+the specific way of doing smoothing.
+
+85
+00:05:54,870 --> 00:05:59,910
+We just need to assume that if we
+smooth with this language model,
+
+86
+00:05:59,910 --> 00:06:05,570
+then we would have a formula that
+looks like a TF-IDF weighting and
+
+87
+00:06:05,570 --> 00:06:06,710
+document length normalization.
+
+88
+00:06:08,220 --> 00:06:13,140
+What's also interesting that we have
+a very fixed form of the ranking function.
+
+89
+00:06:14,170 --> 00:06:17,970
+And see, we have not heuristically
+put a logarithm here.
+
+90
+00:06:19,310 --> 00:06:23,160
+In fact, if you can think about,
+why we would have a logarithm here?
+
+91
+00:06:23,160 --> 00:06:26,970
+If you look at the assumptions that
+we have made, it will be clear.
+
+92
+00:06:26,970 --> 00:06:32,230
+It's because we have used a logarithm
+of query likelihood for scoring.
+
+93
+00:06:33,680 --> 00:06:37,960
+And, we turned the product into
+a sum of logarithm of probability.
+
+94
+00:06:37,960 --> 00:06:39,239
+And, that's why we have this logarithm.
+
+95
+00:06:40,470 --> 00:06:44,730
+Note that if we only want to heuristically
+implement a TF weighting and
+
+96
+00:06:44,730 --> 00:06:48,820
+IDF weighting, we don't necessarily
+have to have a logarithm here.
+
+97
+00:06:48,820 --> 00:06:53,690
+Imagine if we drop this logarithm,
+we would still have TF and IDF weighting.
+
+98
+00:06:55,010 --> 00:06:57,800
+But, what's nice with
+probabilistic modeling is that we
+
+99
+00:06:57,800 --> 00:07:01,950
+are automatically given
+a logarithm function here.
+
+100
+00:07:01,950 --> 00:07:04,250
+And, that's basically,
+
+101
+00:07:04,250 --> 00:07:09,820
+a fixed reform of the formula that we did
+not really have to hueristically line.
+
+102
+00:07:09,820 --> 00:07:14,500
+And in this case,
+if you try to drop this logarithm
+
+103
+00:07:14,500 --> 00:07:19,410
+the model probably won't, won't work
+as well as if you keep the logarithm.
+
+104
+00:07:19,410 --> 00:07:24,310
+So, a nice property of probabilistic
+modeling is that by following some
+
+105
+00:07:24,310 --> 00:07:28,420
+assumptions and the probability rules,
+we'll get a formula automatically.
+
+106
+00:07:29,420 --> 00:07:33,390
+And, the formula would have
+a particular form, like in this case.
+
+107
+00:07:34,600 --> 00:07:36,740
+And, if we hueristically
+design the formula,
+
+108
+00:07:36,740 --> 00:07:40,420
+we may not necessarily end up
+having such a specific form.
+
+109
+00:07:41,700 --> 00:07:46,930
+So to summarize, we talked about the need
+for smoothing a document and model.
+
+110
+00:07:46,930 --> 00:07:51,270
+Otherwise, it would give zero probability
+for unseen words in the document.
+
+111
+00:07:52,350 --> 00:07:57,630
+And, that's not good for
+scoring a query with such an unseen word.
+
+112
+00:07:59,370 --> 00:08:02,600
+It's also necessary,
+in general, to improve the acc,
+
+113
+00:08:02,600 --> 00:08:08,510
+accuracy of estimating the model
+representing the topic of this document.
+
+114
+00:08:10,260 --> 00:08:16,806
+The general idea of smoothing in retrieval
+is to use the connection language model
+
+115
+00:08:16,806 --> 00:08:22,760
+to give us some clue about which unseen
+word would have a higher probability.
+
+116
+00:08:22,760 --> 00:08:26,850
+That is the probability of the unseen
+word is assumed to be proportional
+
+117
+00:08:26,850 --> 00:08:28,340
+to its probability in the collection.
+
+118
+00:08:29,600 --> 00:08:34,340
+With this assumption, we've shown that we
+can derive a general ranking formula for
+
+119
+00:08:34,340 --> 00:08:35,890
+query likelihood.
+
+120
+00:08:35,890 --> 00:08:39,960
+That has a fact of TF-IDF waiting and
+document length normalization.
+
+121
+00:08:39,960 --> 00:08:44,790
+We also see that through some rewriting,
+the scoring of such ranking function,
+
+122
+00:08:44,790 --> 00:08:48,390
+is primarily based on sum of
+weights on matched query terms,
+
+123
+00:08:48,390 --> 00:08:50,530
+just like in the vector space model.
+
+124
+00:08:50,530 --> 00:08:55,850
+But, the actual ranking function
+is given us automatically by
+
+125
+00:08:55,850 --> 00:08:59,010
+the probability rules and
+assumptions we have made.
+
+126
+00:08:59,010 --> 00:09:00,590
+Unlike in the vector space model,
+
+127
+00:09:00,590 --> 00:09:04,580
+where we have to heuristically think
+about the form of the function.
+
+128
+00:09:04,580 --> 00:09:08,470
+However, we still need
+to address the question,
+
+129
+00:09:08,470 --> 00:09:11,830
+how exactly we should we should
+smooth a document image model?
+
+130
+00:09:11,830 --> 00:09:15,964
+How exactly we should use
+the reference language model based on
+
+131
+00:09:15,964 --> 00:09:20,568
+the connection to adjusting
+the probability of the maximum.
+
+132
+00:09:20,568 --> 00:09:22,839
+And, this is the topic
+of the next to that.
+
+133
+00:09:22,839 --> 00:09:32,839
+[MUSIC]
+

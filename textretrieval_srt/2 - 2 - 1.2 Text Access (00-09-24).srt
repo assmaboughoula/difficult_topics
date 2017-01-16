@@ -1,0 +1,632 @@
+1
+00:00:08,450 --> 00:00:14,319
+[SOUND] In this lecture,
+we're going to talk about text access.
+
+2
+00:00:14,319 --> 00:00:17,920
+In the previously lecture, we talked
+about natural language content analysis.
+
+3
+00:00:19,360 --> 00:00:23,970
+We explained that the state of the art
+natural language processing techniques
+
+4
+00:00:23,970 --> 00:00:28,970
+are still not good enough to process
+a lot of unrestricted text data
+
+5
+00:00:28,970 --> 00:00:30,550
+in a robust manner.
+
+6
+00:00:30,550 --> 00:00:33,740
+As a result, bag of words representation
+
+7
+00:00:33,740 --> 00:00:37,246
+remains very popular in
+applications like search engines.
+
+8
+00:00:39,140 --> 00:00:43,210
+In this lecture we're going to talk
+about some high level strategies
+
+9
+00:00:43,210 --> 00:00:48,130
+to help users get access to the text data.
+
+10
+00:00:48,130 --> 00:00:53,350
+This is also important step to
+convert raw, big text data into small
+
+11
+00:00:53,350 --> 00:00:59,520
+relevant data that are actually
+needed in a specific application.
+
+12
+00:00:59,520 --> 00:01:04,400
+So the main question we address here is,
+how can a text information system
+
+13
+00:01:04,400 --> 00:01:07,450
+help users get access to
+the relevant text data?
+
+14
+00:01:07,450 --> 00:01:11,540
+We're going to cover two complementary
+strategies, push vs pull.
+
+15
+00:01:12,610 --> 00:01:17,268
+And then we're going to talk about
+two ways to implement the pull mode,
+
+16
+00:01:17,268 --> 00:01:19,070
+querying vs browsing.
+
+17
+00:01:20,770 --> 00:01:22,860
+So first, push vs pull.
+
+18
+00:01:24,510 --> 00:01:29,250
+These are two different ways to connect
+users with the right information
+
+19
+00:01:29,250 --> 00:01:29,900
+at the right time.
+
+20
+00:01:31,180 --> 00:01:35,910
+The difference is which
+takes the initiative,
+
+21
+00:01:37,230 --> 00:01:38,740
+which party it takes in the initiative.
+
+22
+00:01:40,290 --> 00:01:41,380
+In the pull mode,
+
+23
+00:01:41,380 --> 00:01:46,439
+the users would take the initiative to
+start the information access process.
+
+24
+00:01:47,700 --> 00:01:53,420
+And in this case, a user typically would
+use a search engine to fulfill the goal.
+
+25
+00:01:53,420 --> 00:01:57,142
+For example,
+the user may type in a query, and
+
+26
+00:01:57,142 --> 00:02:01,640
+then browse results to find
+the relevant information.
+
+27
+00:02:02,760 --> 00:02:05,796
+So this is usually appropriate for
+
+28
+00:02:05,796 --> 00:02:09,995
+satisfying a user's ad
+hoc information need.
+
+29
+00:02:09,995 --> 00:02:14,280
+An ad hoc information need is
+a temporary information need.
+
+30
+00:02:14,280 --> 00:02:17,860
+For example, you want to buy a product so
+
+31
+00:02:17,860 --> 00:02:22,550
+you suddenly have a need to read
+reviews about related products.
+
+32
+00:02:22,550 --> 00:02:24,650
+But after you have collected information,
+
+33
+00:02:24,650 --> 00:02:28,770
+you have purchased your product, you
+generally no longer need such information.
+
+34
+00:02:28,770 --> 00:02:30,200
+So it's a temporary information need.
+
+35
+00:02:31,360 --> 00:02:35,220
+In such a case, it's very hard for
+a system to predict your need, and
+
+36
+00:02:35,220 --> 00:02:39,370
+it's more appropriate for
+the users to take the initiative.
+
+37
+00:02:39,370 --> 00:02:42,580
+And that's why search engines
+are very useful today,
+
+38
+00:02:42,580 --> 00:02:48,370
+because many people have many ad
+hoc information needs all the time.
+
+39
+00:02:48,370 --> 00:02:52,730
+So as we are speaking Google probably is
+processing many queries from this, and
+
+40
+00:02:52,730 --> 00:02:56,620
+those are all, or
+mostly ad hoc information needs.
+
+41
+00:02:57,950 --> 00:02:59,680
+So this is a pull mode.
+
+42
+00:02:59,680 --> 00:03:03,570
+In contrast, in the push mode
+the system will take the initiative
+
+43
+00:03:03,570 --> 00:03:07,510
+to push the information to the user or
+to recommend the information to the user.
+
+44
+00:03:07,510 --> 00:03:11,090
+So in this case, this is usually
+supported by a recommender system.
+
+45
+00:03:13,100 --> 00:03:17,900
+Now this would be appropriate if
+the user has a stable information need.
+
+46
+00:03:17,900 --> 00:03:22,050
+For example, you may have a research
+interest in some topic, and
+
+47
+00:03:22,050 --> 00:03:26,880
+that interest tends to stay for
+a while, so it's relatively stable.
+
+48
+00:03:26,880 --> 00:03:31,210
+Your hobby is another example
+of a stable information need.
+
+49
+00:03:31,210 --> 00:03:36,110
+In such a case, the system can interact
+with you and can learn your interest, and
+
+50
+00:03:36,110 --> 00:03:38,850
+then can monitor the information stream.
+
+51
+00:03:38,850 --> 00:03:43,710
+If it is, the system hasn't seen any
+relevant items to your interest,
+
+52
+00:03:43,710 --> 00:03:47,900
+the system could then take the initiative
+to recommend information to you.
+
+53
+00:03:47,900 --> 00:03:49,629
+So for example, a news filter or
+
+54
+00:03:49,629 --> 00:03:52,767
+news recommender system could
+monitor the news stream and
+
+55
+00:03:52,767 --> 00:03:56,880
+identify interest in news to you, and
+simply push the news articles to you.
+
+56
+00:03:59,130 --> 00:04:03,430
+This mode of information access
+may be also appropriate when
+
+57
+00:04:03,430 --> 00:04:06,460
+the system has a good knowledge
+about the user's need.
+
+58
+00:04:06,460 --> 00:04:08,790
+And this happens in the search context.
+
+59
+00:04:08,790 --> 00:04:12,890
+So for example, when you search for
+information on the web a search
+
+60
+00:04:12,890 --> 00:04:17,530
+engine might infer you might be also
+interested in some related information.
+
+61
+00:04:17,530 --> 00:04:19,550
+And they would recommend
+the information to you.
+
+62
+00:04:19,550 --> 00:04:24,880
+So that should remind you for example,
+advertisement placed on a search page.
+
+63
+00:04:27,790 --> 00:04:34,530
+So this is about the, the two high level
+strategies or two modes of text access.
+
+64
+00:04:35,720 --> 00:04:38,450
+Now let's look at the pull
+mode in more detail.
+
+65
+00:04:39,900 --> 00:04:43,860
+In the pull mode, we can further this
+in usually two ways to help users,
+
+66
+00:04:43,860 --> 00:04:46,010
+querying vs browsing.
+
+67
+00:04:46,010 --> 00:04:50,050
+In querying, a user would just enter
+a query, typically a keyword query, and
+
+68
+00:04:50,050 --> 00:04:54,490
+the search engine system would
+return relevant documents to users.
+
+69
+00:04:54,490 --> 00:04:58,569
+And this works well when
+the user knows what exactly key,
+
+70
+00:04:58,569 --> 00:05:00,710
+are the keywords to be used.
+
+71
+00:05:00,710 --> 00:05:02,470
+So if you know exactly
+what you're looking for
+
+72
+00:05:02,470 --> 00:05:06,740
+you tend to know the right keywords,
+and then query would work very well.
+
+73
+00:05:06,740 --> 00:05:07,870
+And we do that all the time.
+
+74
+00:05:09,290 --> 00:05:12,380
+But we also know that
+sometimes it doesn't work so
+
+75
+00:05:12,380 --> 00:05:16,960
+well, when you don't know the right
+keywords to use in the query or
+
+76
+00:05:16,960 --> 00:05:21,780
+you want to browse information
+in some topic area.
+
+77
+00:05:21,780 --> 00:05:24,780
+In this case browsing
+would be more useful.
+
+78
+00:05:24,780 --> 00:05:29,900
+So in this case in the case of browsing
+the users would simply navigate
+
+79
+00:05:29,900 --> 00:05:33,330
+into the relevant information
+by following the path that's
+
+80
+00:05:34,740 --> 00:05:39,870
+supported by the structures
+on the documents.
+
+81
+00:05:39,870 --> 00:05:42,720
+So the system would maintain
+some kind of structures, and
+
+82
+00:05:42,720 --> 00:05:47,360
+then the user could follow
+these structures to navigate.
+
+83
+00:05:47,360 --> 00:05:53,699
+So this strategy works well when the user
+wants to explore information space or
+
+84
+00:05:53,699 --> 00:05:59,750
+the user doesn't know what
+are the keywords to use in the query.
+
+85
+00:05:59,750 --> 00:06:05,080
+Or simply because the user, finds it
+inconvenient to type in the query.
+
+86
+00:06:05,080 --> 00:06:10,450
+So even if a user knows what query to type
+in, if the user is using a cell phone
+
+87
+00:06:10,450 --> 00:06:14,760
+to search for information,
+then it's still hard to enter the query.
+
+88
+00:06:14,760 --> 00:06:18,547
+In such a case again,
+browsing tends to be more convenient.
+
+89
+00:06:18,547 --> 00:06:21,410
+The relationship between browsing and
+
+90
+00:06:21,410 --> 00:06:25,230
+the query is best understood by
+making an analogy to sightseeing.
+
+91
+00:06:25,230 --> 00:06:26,837
+Imagine if you are touring a city.
+
+92
+00:06:26,837 --> 00:06:31,627
+Now if you know the exact address
+of a attraction, then taking a taxi
+
+93
+00:06:31,627 --> 00:06:36,682
+there is perhaps the fastest way,
+you can go directly to the site.
+
+94
+00:06:36,682 --> 00:06:40,464
+But if you don't know the exact address,
+you may need to walk around, or
+
+95
+00:06:40,464 --> 00:06:43,579
+you can take a taxi to a nearby place,
+and then walk around.
+
+96
+00:06:44,670 --> 00:06:48,160
+It turns out that we do exactly
+the same in the information space.
+
+97
+00:06:48,160 --> 00:06:51,480
+If you know exactly what you
+are looking for, then you can
+
+98
+00:06:51,480 --> 00:06:55,350
+use the right keywords in your query
+to find the information directly.
+
+99
+00:06:55,350 --> 00:06:58,320
+That's usually the fastest
+way to do find information.
+
+100
+00:06:59,480 --> 00:07:02,160
+But what if you don't know
+the exact keywords to use?
+
+101
+00:07:02,160 --> 00:07:06,275
+Well, your query probably won't work so
+well, and you will land on some related
+
+102
+00:07:06,275 --> 00:07:09,921
+pages, and then you need to also walk
+around in the information space.
+
+103
+00:07:09,921 --> 00:07:13,134
+Meaning by following the links or
+by browsing,
+
+104
+00:07:13,134 --> 00:07:16,440
+you can then finally get
+into the relevant page.
+
+105
+00:07:17,580 --> 00:07:23,280
+If you want to learn about a topic again,
+you you will likely do a lot of browsing.
+
+106
+00:07:24,380 --> 00:07:28,050
+So just like you are looking
+around in some area and
+
+107
+00:07:28,050 --> 00:07:33,350
+you want to see some interesting
+attractions in a related
+
+108
+00:07:35,540 --> 00:07:39,200
+in the same region.
+
+109
+00:07:39,200 --> 00:07:45,220
+So this analogy also tells us that
+today we have very good support for
+
+110
+00:07:45,220 --> 00:07:49,520
+querying, but we don't really
+have good support for browsing.
+
+111
+00:07:50,600 --> 00:07:56,510
+And this is because in order to browse
+effectively, we need a a map to guide us,
+
+112
+00:07:56,510 --> 00:08:00,220
+just like you need a map of Chicago
+to tour the city of Chicago.
+
+113
+00:08:00,220 --> 00:08:04,060
+You need a topical map to
+tour the information space.
+
+114
+00:08:04,060 --> 00:08:08,190
+So how to construct such a topical
+map is in fact a very interesting
+
+115
+00:08:08,190 --> 00:08:12,730
+research question that
+likely will bring us
+
+116
+00:08:12,730 --> 00:08:16,970
+more interesting browsing experience
+on the web or in other applications.
+
+117
+00:08:19,170 --> 00:08:23,930
+So to summarize this lecture, we have
+talked about two high level strategies for
+
+118
+00:08:23,930 --> 00:08:26,540
+text access, push and pull.
+
+119
+00:08:26,540 --> 00:08:29,100
+Push tends to be supported
+by a recommender system and
+
+120
+00:08:29,100 --> 00:08:31,770
+pull tends to be supported
+by a search engine.
+
+121
+00:08:31,770 --> 00:08:35,730
+Of course in the sophisticated
+intent in the information system,
+
+122
+00:08:35,730 --> 00:08:36,780
+we should combine the two.
+
+123
+00:08:38,590 --> 00:08:41,830
+In the pull mode we have further
+distinguished querying and browsing.
+
+124
+00:08:41,830 --> 00:08:46,612
+Again, we generally want to combine
+the two ways to help users so
+
+125
+00:08:46,612 --> 00:08:50,080
+that you can support both querying and
+browsing.
+
+126
+00:08:51,210 --> 00:08:55,420
+If you want to know more about
+the relationship between pull and
+
+127
+00:08:55,420 --> 00:08:58,608
+push, you can read this article.
+
+128
+00:08:58,608 --> 00:09:03,536
+This gives a excellent discussion of the
+relationship between information filtering
+
+129
+00:09:03,536 --> 00:09:05,231
+and information retrieval.
+
+130
+00:09:05,231 --> 00:09:10,083
+Here information filtering is similar
+to information recommendation,
+
+131
+00:09:10,083 --> 00:09:12,753
+or the push mode of information access.
+
+132
+00:09:12,753 --> 00:09:22,753
+[MUSIC]
+
